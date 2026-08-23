@@ -1,0 +1,31 @@
+# dependencies
+**/node_modules
+
+# production
+/dist
+
+# misc
+.DS_Store
+npm-debug.log*
+yarn-error.log
+
+/coverage
+.idea
+yarn.lock
+*bak
+.vscode
+.history
+*.log
+.temp/**
+
+# umi
+.umi
+.umi-production
+.umi-test
+.umi-undefined
+.turbopack
+
+build
+
+# claude code local settings
+.claude/settings.local.json

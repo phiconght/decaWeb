@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap');
+
+/**
+ * Design tokens — copy nguyên từ ThietKe/Web/files/*.html `:root` (9 file
+ * dùng chung 1 bảng token). Xem ThietKe/Web/PLAN_TrienKhai_WEB.md §1.1/§3.2 A3.
+ * Nguồn sự thật duy nhất cho màu/font/bo góc/bóng — component không hardcode hex.
+ */
+:root {
+  --paper: #f7f4ec;
+  --card: #ffffff;
+  --card-warm: #fffdf8;
+  --ink: #1c1b2e;
+  --ink-soft: #6e6c82;
+  --ink-faint: #a7a4b8;
+  --line: #e9e4d8;
+  --line-soft: #efebe1;
+  --cobalt: #2e43e8;
+  --cobalt-dark: #1e2fb8;
+  --cobalt-tint: #ebedfc;
+  --coral: #ff5d6c;
+  --coral-tint: #ffeaec;
+  --gold: #f2a93b;
+  --gold-dark: #c97f1b;
+  --sage: #2fae7a;
+  --sage-tint: #e7f7ef;
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --shadow-card: 0 1px 2px rgba(28, 27, 46, 0.04), 0 8px 24px -12px rgba(28, 27, 46, 0.1);
+  --shadow-pop: 0 4px 10px -4px rgba(28, 27, 46, 0.12), 0 16px 32px -14px rgba(28, 27, 46, 0.14);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Be Vietnam Pro', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.01em;
+}
+
+.mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/**
+ * Khung AppShell (src/components/AppShell) — ánh xạ `.shell/.main/.content`
+ * của thiết kế. Sidebar `position:fixed` 260px trên desktop; dưới 900px sập
+ * thành drawer off-canvas (đơn giản hoá so với bản thiết kế 3 bậc breakpoint
+ * — bỏ bậc "chỉ còn icon" 900-640px để tránh over-engineer, vẫn giữ đúng
+ * hành vi chức năng: ẩn hẳn/hiện đầy đủ).
+ */
+.app-shell {
+  display: flex;
+  min-height: 100%;
+}
+
+.app-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  margin-left: 260px;
+}
+
+.app-content {
+  padding: 28px 32px 56px;
+  max-width: 1240px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.app-sidebar-backdrop {
+  display: none;
+}
+
+.app-hamburger {
+  display: none !important;
+}
+
+@media (max-width: 899px) {
+  .app-main {
+    margin-left: 0;
+  }
+
+  .app-sidebar {
+    transform: translateX(-100%);
+  }
+
+  .app-sidebar[data-open='true'] {
+    transform: translateX(0);
+  }
+
+  .app-sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 20, 35, 0.35);
+    z-index: 35;
+  }
+
+  .app-hamburger {
+    display: flex !important;
+  }
+
+  .app-content {
+    padding: 24px 20px 48px;
+  }
+}
+
+@media (max-width: 1079px) {
+  .app-search-pill {
+    display: none !important;
+  }
+}
