@@ -5,7 +5,7 @@
  * (global.less là nguồn hiển thị, file này là nguồn cho logic JS).
  */
 export const tokens = {
-  paper: '#F7F4EC',
+  paper: '#FAFAF5',
   card: '#FFFFFF',
   cardWarm: '#FFFDF8',
   ink: '#1C1B2E',

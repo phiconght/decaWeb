@@ -6,7 +6,11 @@
  * Nguồn sự thật duy nhất cho màu/font/bo góc/bóng — component không hardcode hex.
  */
 :root {
-  --paper: #f7f4ec;
+  // Sáng hơn bản gốc #f7f4ec (phản hồi người dùng 13/09/2026: nền quá tối) —
+  // giữ chút ấm nhưng gần trắng hơn hẳn. Đổi ở đây thì đổi luôn theme/tokens.ts
+  // (bản JS) và MOBILE/lib/core/theme/app_colors.dart (AppColors.paper) để 3
+  // app khớp nhau.
+  --paper: #fafaf5;
   --card: #ffffff;
   --card-warm: #fffdf8;
   --ink: #1c1b2e;
@@ -127,5 +131,79 @@ a {
 @media (max-width: 1079px) {
   .app-search-pill {
     display: none !important;
+  }
+}
+
+/**
+ * Khung trang cho khách CHƯA ĐĂNG NHẬP (PublicShell) — header ngang + nội
+ * dung + footer gọn, không sidebar. Xem
+ * KEHOACH_WEB_TrangChuCongKhai_HeroContent.md mục 6.2.
+ */
+.public-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.public-header {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  height: 72px;
+  flex-shrink: 0;
+  padding: 0 32px;
+  background: rgba(247, 244, 236, 0.86);
+  backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  border-bottom: 1px solid var(--line);
+}
+
+.public-nav {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex: 1;
+}
+
+.public-nav-link {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+
+  &[data-active='true'] {
+    color: var(--cobalt);
+  }
+
+  &:hover {
+    color: var(--ink);
+  }
+}
+
+.public-content {
+  flex: 1;
+  padding: 28px 32px 56px;
+  max-width: 1240px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.public-footer {
+  flex-shrink: 0;
+  padding: 20px 32px;
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--ink-faint);
+  border-top: 1px solid var(--line);
+}
+
+@media (max-width: 899px) {
+  .public-nav {
+    display: none;
+  }
+
+  .public-content {
+    padding: 24px 20px 48px;
   }
 }

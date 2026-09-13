@@ -1,4 +1,4 @@
-import { history, useAccess } from '@umijs/max';
+import { history, useAccess, useModel } from '@umijs/max';
 import React from 'react';
 import { BookIcon } from '@/components/icons';
 import EnrollButton from '@/components/EnrollButton';
@@ -7,7 +7,9 @@ import type { MarketingCategoryItem } from '@/typings/marketing';
 /**
  * 1 hàng danh mục nổi bật (banner cosmetic + thẻ lớp học THẬT, lọc theo
  * khối lớp — cùng nguồn với "Khám phá khóa học"). Đồng bộ Mobile
- * (marketing_category_row.dart).
+ * (marketing_category_row.dart). Dùng chung cho Dashboard (đã đăng nhập)
+ * VÀ Trang chủ công khai (khách) — xem
+ * KEHOACH_WEB_TrangChuCongKhai_HeroContent.md mục 6.3/6.4.
  */
 export default function CategoryRow({
   category,
@@ -17,6 +19,8 @@ export default function CategoryRow({
   onEnrolled: () => void;
 }) {
   const access = useAccess();
+  const { initialState } = useModel('@@initialState');
+  const isGuest = !initialState?.currentUser;
   if (category.classes.length === 0) return null;
 
   return (
@@ -175,7 +179,12 @@ export default function CategoryRow({
             {!item.coinPrice && (
               <div style={{ fontSize: 10.5, color: 'var(--ink-soft)' }}>{item.gradeLevel}</div>
             )}
-            <EnrollButton item={item} isStudent={!!access.isStudent} onEnrolled={onEnrolled} />
+            <EnrollButton
+              item={item}
+              isStudent={!!access.isStudent}
+              isGuest={isGuest}
+              onEnrolled={onEnrolled}
+            />
           </div>
         ))}
       </div>

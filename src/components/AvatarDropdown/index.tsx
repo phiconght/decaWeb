@@ -22,7 +22,10 @@ export const AvatarDropdown: React.FC<{ children?: React.ReactNode }> = () => {
         setInitialState((s) => ({ ...s, currentUser: undefined })),
       );
       await logout();
-      history.replace('/login');
+      // Về Trang chủ công khai, không phải /login (quyết định 13/09/2026 —
+      // KEHOACH_WEB_TrangChuCongKhai_HeroContent.md mục 2). `PublicShell`
+      // hiện đúng ngay nhờ flushSync ở trên đã xoá currentUser trước đó.
+      history.replace('/home');
       return;
     }
     if (key === 'account') history.push('/account');

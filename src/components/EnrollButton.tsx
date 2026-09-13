@@ -1,3 +1,4 @@
+import { history } from '@umijs/max';
 import { message, Modal } from 'antd';
 import React from 'react';
 import { PrimaryButton } from '@/components/ui/Buttons';
@@ -16,16 +17,30 @@ const money = (n: number) => n.toLocaleString('vi-VN');
 export default function EnrollButton({
   item,
   isStudent,
+  isGuest,
   onEnrolled,
 }: {
   item: ClassCatalogItem;
   isStudent: boolean;
+  /** Khách CHƯA đăng nhập (khác với "đã đăng nhập nhưng không phải học
+   * sinh" — vd Phụ huynh/Giáo viên vẫn chỉ thấy chip giá như trước). */
+  isGuest?: boolean;
   onEnrolled: () => void;
 }) {
   const [enrolling, setEnrolling] = React.useState(false);
 
   if (!item.coinPrice || item.coinPrice <= 0) return null;
   if (item.enrolled) return <Chip variant="sage">Đã tham gia</Chip>;
+  if (isGuest) {
+    return (
+      <PrimaryButton
+        onClick={() => history.push('/login?redirect=/catalog')}
+        style={{ width: '100%', justifyContent: 'center', padding: '8px 14px' }}
+      >
+        Đăng nhập để đăng ký
+      </PrimaryButton>
+    );
+  }
   if (!isStudent) return <Chip variant="gold">{money(item.coinPrice)} Xu</Chip>;
 
   const coinPrice = item.coinPrice;

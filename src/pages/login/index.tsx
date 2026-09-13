@@ -1,6 +1,6 @@
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, LockOutlined, UserOutlined } from '@ant-design/icons';
 import { LoginForm, ProFormText } from '@ant-design/pro-components';
-import { history, useModel } from '@umijs/max';
+import { history, Link, useModel } from '@umijs/max';
 import { message } from 'antd';
 import React from 'react';
 import { getMe, login, toCurrentUser, tokenStore } from '@/services/auth';
@@ -50,12 +50,27 @@ export default function LoginPage() {
     <div
       style={{
         display: 'flex',
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
         minHeight: '100vh',
         background: 'var(--paper)',
+        gap: 16,
       }}
     >
+      <Link
+        to="/home"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6,
+          fontSize: 13.5,
+          fontWeight: 600,
+          color: 'var(--ink-soft)',
+        }}
+      >
+        <ArrowLeftOutlined /> Về trang chủ
+      </Link>
       <div
         style={{
           background: 'var(--card)',

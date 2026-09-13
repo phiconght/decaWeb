@@ -26,8 +26,23 @@ export interface TestimonialItem {
   quote: string;
 }
 
+/** Khối giới thiệu (Hero) của Trang chủ công khai — chỉ Web dùng, cấu hình
+ * qua màn "Nội Dung" của ADMIN. `null` nếu chưa cấu hình hoặc đang tắt. */
+export interface HomeHeroResponse {
+  badgeText?: string;
+  title: string;
+  subtitle?: string;
+  primaryCtaLabel?: string;
+  primaryCtaHref?: string;
+  secondaryCtaLabel?: string;
+  secondaryCtaHref?: string;
+  backgroundImageUrl?: string;
+  visible: boolean;
+}
+
 /** GET /api/v1/home/marketing */
 export interface HomeMarketingResponse {
+  hero?: HomeHeroResponse | null;
   categories: MarketingCategoryItem[];
   trustStats: TrustStatsResponse;
   testimonials: TestimonialItem[];

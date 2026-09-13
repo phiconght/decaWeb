@@ -1,4 +1,4 @@
-import { useAccess } from '@umijs/max';
+import { useAccess, useModel } from '@umijs/max';
 import React from 'react';
 import { BookIcon, SearchIcon } from '@/components/icons';
 import Chip from '@/components/ui/Chip';
@@ -13,6 +13,9 @@ import type { ClassCatalogItem } from '@/typings/class';
  * theo khối). Du LIEU THAT tu GET /classes/catalog (dong bo voi Mobile) —
  * co gia Xu + nut "Đăng ký" cho HOC SINH neu lop mo ban qua Xu
  * (xem KE_HOACH_TRIEN_KHAI.md, ho tro BE POST /classes/{id}/enroll).
+ * Cong khai cho khach CHUA dang nhap (cung 1 endpoint, khong che gia/GV —
+ * KEHOACH_WEB_TrangChuCongKhai_HeroContent.md) — khach chi thay lop ACTIVE
+ * (BE loc san) va thay CTA "Đăng nhập để đăng ký" thay vi chip gia.
  */
 const GRADIENTS = [
   'linear-gradient(150deg,#2E43E8,#5B6CFF)',
@@ -26,11 +29,13 @@ function CourseCard({
   item,
   gradient,
   isStudent,
+  isGuest,
   onEnrolled,
 }: {
   item: ClassCatalogItem;
   gradient: string;
   isStudent: boolean;
+  isGuest: boolean;
   onEnrolled: () => void;
 }) {
   return (
@@ -98,7 +103,12 @@ function CourseCard({
           <Chip variant="cobalt">
             {item.subjectName} · {item.gradeLevel}
           </Chip>
-          <EnrollButton item={item} isStudent={isStudent} onEnrolled={onEnrolled} />
+          <EnrollButton
+            item={item}
+            isStudent={isStudent}
+            isGuest={isGuest}
+            onEnrolled={onEnrolled}
+          />
         </div>
       </div>
     </div>
@@ -107,6 +117,8 @@ function CourseCard({
 
 export default function CatalogPage() {
   const access = useAccess();
+  const { initialState } = useModel('@@initialState');
+  const isGuest = !initialState?.currentUser;
   const [search, setSearch] = React.useState('');
   const [subject, setSubject] = React.useState('all');
   const [grade, setGrade] = React.useState('all');
@@ -295,6 +307,7 @@ export default function CatalogPage() {
                   item={item}
                   gradient={GRADIENTS[i % GRADIENTS.length]}
                   isStudent={!!access.isStudent}
+                  isGuest={isGuest}
                   onEnrolled={load}
                 />
               ))}

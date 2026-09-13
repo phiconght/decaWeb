@@ -14,7 +14,9 @@ dayjs.extend(relativeTime);
 // tiếng Việt thay vì dựa vào default toàn cục.
 
 import AppShell from '@/components/AppShell';
-import { getMe, toCurrentUser } from '@/services/auth';
+import PublicShell from '@/components/PublicShell';
+import { isPublicPath } from '@/constants/publicRoutes';
+import { getMe, toCurrentUser, tokenStore } from '@/services/auth';
 import { tokens } from '@/theme/tokens';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
@@ -25,6 +27,10 @@ const loginPath = '/login';
  * @see https://umijs.org/docs/api/runtime-config#getinitialstate
  * WEB/PLAN.md §6.4 — khác ADMIN ở việc chặn ADMIN/EMPLOYEE thuần (không phải
  * đối tượng dùng WEB), chuyển hướng sang trang Admin.
+ *
+ * KEHOACH_WEB_TrangChuCongKhai_HeroContent.md mục 6.1 — trang chủ và vài
+ * trang khác (`isPublicPath`) không đòi đăng nhập: khách xem được thẳng,
+ * người đã đăng nhập (có token) vẫn thấy đúng dashboard/bản thân họ.
  */
 export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
@@ -46,8 +52,11 @@ export async function getInitialState(): Promise<{
       }
       return cu;
     } catch {
+      // Token hết hạn/không hợp lệ — dọn sạch để không kẹt ở trạng thái nửa
+      // đăng nhập (rơi vào trang khách nhưng token rác vẫn còn).
+      tokenStore.clear();
       const { pathname, search, hash } = history.location;
-      if (pathname !== loginPath) {
+      if (!isPublicPath(pathname) && pathname !== loginPath) {
         history.replace(
           `${loginPath}?redirect=${encodeURIComponent(pathname + search + hash)}`,
         );
@@ -57,7 +66,11 @@ export async function getInitialState(): Promise<{
   };
 
   const { location } = history;
-  if (location.pathname !== loginPath) {
+  // Không có token thì khỏi gọi /auth/me — khách mở trang công khai không
+  // cần bắn API sẽ chắc chắn 401. Có token thì LUÔN thử nạp user, kể cả ở
+  // route công khai — để người đã đăng nhập vào /home thấy dashboard, không
+  // thấy trang khách.
+  if (location.pathname !== loginPath && tokenStore.getAccess()) {
     const currentUser = await fetchUserInfo();
     return {
       fetchUserInfo,
@@ -76,8 +89,9 @@ export async function getInitialState(): Promise<{
  * ThietKe/Web/PLAN_TrienKhai_WEB.md §3.2 A1 — KHÔNG dùng ProLayout làm khung
  * hiển thị (sidebar/header/footer mặc định tắt hết), chỉ mượn cơ chế
  * `childrenRender` của Umi (đọc từ Layout.tsx tự sinh) để bọc nội dung trang
- * bằng `AppShell` tự viết theo đúng thiết kế mới. `onPageChange` (redirect
- * khi chưa đăng nhập) vẫn hoạt động độc lập với việc tắt chrome.
+ * bằng `AppShell`/`PublicShell` tự viết theo đúng thiết kế mới. `onPageChange`
+ * (redirect khi chưa đăng nhập ở route riêng tư) vẫn hoạt động độc lập với
+ * việc tắt chrome.
  */
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
   return {
@@ -85,10 +99,19 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     headerRender: false,
     footerRender: false,
     menuHeaderRender: false,
-    childrenRender: (dom: React.ReactNode) => <AppShell>{dom}</AppShell>,
+    childrenRender: (dom: React.ReactNode) =>
+      initialState?.currentUser ? (
+        <AppShell>{dom}</AppShell>
+      ) : (
+        <PublicShell>{dom}</PublicShell>
+      ),
     onPageChange: () => {
       const { location } = history;
-      if (!initialState?.currentUser && location.pathname !== loginPath) {
+      if (
+        !initialState?.currentUser &&
+        location.pathname !== loginPath &&
+        !isPublicPath(location.pathname)
+      ) {
         history.replace(
           `${loginPath}?redirect=${encodeURIComponent(location.pathname + location.search + location.hash)}`,
         );

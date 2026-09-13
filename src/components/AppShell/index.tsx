@@ -1,13 +1,18 @@
-import { useAccess, useModel } from '@umijs/max';
+import { useAccess } from '@umijs/max';
 import React from 'react';
 import { getNavGroups } from './navConfig';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 
-/** Ánh xạ `.shell > .sidebar + .main(.topbar + .content)` — khung trang chính, thay ProLayout. */
+/**
+ * Ánh xạ `.shell > .sidebar + .main(.topbar + .content)` — khung trang chính
+ * cho người ĐÃ ĐĂNG NHẬP, thay ProLayout. `src/app.tsx` `childrenRender` chỉ
+ * bọc component này khi có `currentUser` (ngược lại dùng `PublicShell`) nên
+ * không cần tự kiểm tra lại ở đây (KEHOACH_WEB_TrangChuCongKhai_HeroContent.md
+ * mục 6.1).
+ */
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const access = useAccess();
-  const { initialState } = useModel('@@initialState');
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
 
   const navGroups = React.useMemo(
@@ -21,11 +26,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       }),
     [access],
   );
-
-  if (!initialState?.currentUser) {
-    // Đang chờ src/app.tsx `layout.onPageChange` redirect sang /login — không render khung trang.
-    return null;
-  }
 
   return (
     <div className="app-shell">
