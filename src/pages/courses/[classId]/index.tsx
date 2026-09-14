@@ -133,7 +133,10 @@ export default function CourseOutlinePage() {
 }
 
 function SessionRow({ session: s }: { session: OutlineSession }) {
-  const clickable = s.status === 'DONE';
+  // status do BE tinh san (PLANNED/IN_PROGRESS/DONE/CANCELLED) — IN_PROGRESS
+  // nghia la da qua gio bat dau, mo duoc xem video/de thi ngay, khong doi
+  // den khi BE dong buoi (DONE) luc 23:30. Web KHONG tu tinh gio (BE lam).
+  const clickable = s.status === 'DONE' || s.status === 'IN_PROGRESS';
   const meta = getStatusMeta('session', s.status);
   return (
     <div

@@ -20,9 +20,11 @@ import { fetchTimetable } from '@/services/timetable';
 import type { PostItem } from '@/typings/post';
 import type { TimetableItem } from '@/typings/timetable';
 import { viDate } from '@/utils/date';
+import { getStatusMeta } from '@/utils/statusMeta';
 
 const SESSION_VARIANT = {
   PLANNED: 'cobalt',
+  IN_PROGRESS: 'cobalt',
   DONE: 'sage',
   CANCELLED: 'neutral',
 } as const;
@@ -146,7 +148,7 @@ export default function HomeDashboard() {
                   {s.startTime.slice(0, 5)}–{s.endTime.slice(0, 5)}
                 </span>
                 <Chip variant={SESSION_VARIANT[s.status] ?? 'neutral'}>
-                  {s.status === 'DONE' ? 'Đã học' : 'Sắp diễn ra'}
+                  {getStatusMeta('session', s.status).label}
                 </Chip>
                 <span style={{ fontWeight: 600 }}>{s.className}</span>
                 <span style={{ color: 'var(--ink-soft)', fontSize: 13 }}>

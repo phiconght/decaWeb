@@ -71,7 +71,9 @@ export default function SessionDetailPage() {
     try {
       await selfCheckin(sessionId);
       message.success('Đã điểm danh');
-      setItem((prev) => (prev ? { ...prev, attendanceStatus: 'CO_MAT' } : prev));
+      setItem((prev) =>
+        prev ? { ...prev, attendanceStatus: 'CO_MAT' } : prev,
+      );
     } catch {
       message.error('Điểm danh thất bại');
     } finally {
@@ -79,12 +81,14 @@ export default function SessionDetailPage() {
     }
   };
 
-  const isToday = item ? item.date === new Date().toISOString().slice(0, 10) : false;
+  const isToday = item
+    ? item.date === new Date().toISOString().slice(0, 10)
+    : false;
   const canCheckin =
     view === 'STUDENT' &&
     !!item &&
     item.deliveryMode === 'ONLINE' &&
-    item.status === 'PLANNED' &&
+    (item.status === 'PLANNED' || item.status === 'IN_PROGRESS') &&
     isToday &&
     (!item.attendanceStatus || item.attendanceStatus === 'CHUA_CHECKIN');
 

@@ -6,7 +6,7 @@ export interface TimetableQuery {
   branchId?: number;
 }
 
-export type SessionStatus = 'PLANNED' | 'DONE' | 'CANCELLED';
+export type SessionStatus = 'PLANNED' | 'IN_PROGRESS' | 'DONE' | 'CANCELLED';
 
 export interface TimetableItem {
   sessionId: number;

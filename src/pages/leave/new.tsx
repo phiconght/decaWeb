@@ -52,8 +52,13 @@ export default function LeaveNewPage() {
     const from = dayjs().format('YYYY-MM-DD');
     const to = dayjs().add(30, 'day').format('YYYY-MM-DD');
     fetchTimetable({ view, from, to }).then((list) => {
+      // Buổi đang diễn ra (IN_PROGRESS) vẫn cho xin nghỉ: phụ huynh thường
+      // báo nghỉ ngay sát/đầu giờ học, và BE không chặn theo trạng thái buổi.
+      // Chỉ loại buổi đã xong/đã hủy.
       const mine = list.filter(
-        (it) => it.studentId === studentId && it.status === 'PLANNED',
+        (it) =>
+          it.studentId === studentId &&
+          (it.status === 'PLANNED' || it.status === 'IN_PROGRESS'),
       );
       setUpcomingSessions(mine);
       const seen = new Map<number, string>();

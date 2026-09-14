@@ -18,6 +18,7 @@ const LEAVE: Record<string, StatusMeta> = {
 
 const SESSION: Record<string, StatusMeta> = {
   PLANNED: { color: 'blue', label: 'Sắp diễn ra' },
+  IN_PROGRESS: { color: 'blue', label: 'Đang diễn ra' },
   DONE: { color: 'green', label: 'Đã học' },
   CANCELLED: { color: 'red', label: 'Đã huỷ' },
 };

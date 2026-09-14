@@ -15,6 +15,7 @@ import { ListCard, ListRow } from '@/components/ui/ListCard';
 import { fetchTimetable } from '@/services/timetable';
 import type { TimetableItem } from '@/typings/timetable';
 import { viDate } from '@/utils/date';
+import { getStatusMeta } from '@/utils/statusMeta';
 
 function mondayOf(d: Dayjs) {
   const day = d.day();
@@ -24,6 +25,7 @@ function mondayOf(d: Dayjs) {
 
 const STATUS_CHIP = {
   PLANNED: { variant: 'cobalt', color: 'var(--cobalt)' },
+  IN_PROGRESS: { variant: 'cobalt', color: 'var(--cobalt)' },
   DONE: { variant: 'sage', color: 'var(--sage)' },
   CANCELLED: { variant: 'neutral', color: 'var(--ink-faint)' },
 } as const;
@@ -391,11 +393,7 @@ export default function TimetablePage() {
                 .join(' · ')}
               right={
                 <Chip variant={STATUS_CHIP[item.status]?.variant ?? 'neutral'}>
-                  {item.status === 'DONE'
-                    ? 'Đã học'
-                    : item.status === 'CANCELLED'
-                      ? 'Đã huỷ'
-                      : 'Sắp diễn ra'}
+                  {getStatusMeta('session', item.status).label}
                 </Chip>
               }
               onClick={() =>
