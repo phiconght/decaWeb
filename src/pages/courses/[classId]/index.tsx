@@ -1,4 +1,5 @@
 import { history, useParams } from '@umijs/max';
+import { message } from 'antd';
 import React from 'react';
 import { BookIcon, ChevronRightIcon } from '@/components/icons';
 import PageTitle from '@/components/PageTitle';
@@ -10,6 +11,7 @@ import Panel from '@/components/ui/Panel';
 import ProgressBar from '@/components/ui/ProgressBar';
 import QuizChip from '@/components/ui/QuizChip';
 import { fetchClassOutline } from '@/services/classOutline';
+import { downloadExamPdf } from '@/services/exam';
 import { toChipVariant } from '@/theme/tokens';
 import type {
   ClassOutlineResponse,
@@ -187,15 +189,35 @@ function SessionRow({ session: s }: { session: OutlineSession }) {
 }
 
 function ExamRow({ exam: e }: { exam: OutlineExam }) {
+  const [downloading, setDownloading] = React.useState(false);
+  // Chi cho vao lam bai truc tiep khi de da mo (DA_PHAT_HANH) hoac dang lam
+  // do (DANG_KIEM_TRA) — bo hien thi trang thai enum tho (phan hoi 14/09/2026).
+  const canOpen =
+    e.studentStatus === 'DA_PHAT_HANH' || e.studentStatus === 'DANG_KIEM_TRA';
+
+  const handleDownload = async () => {
+    setDownloading(true);
+    try {
+      await downloadExamPdf(e.examId);
+    } catch (err) {
+      message.error(err instanceof Error ? err.message : 'Tải PDF thất bại');
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   return (
     <QuizChip
       label={e.name}
       tag={
         e.score != null
           ? `${e.score}${e.maxScore != null ? `/${e.maxScore}` : ''}`
-          : (e.studentStatus ?? undefined)
+          : undefined
       }
-      tagVariant={e.score != null ? 'sage' : 'cobalt'}
+      tagVariant="sage"
+      onClick={canOpen ? () => history.push(`/exams/${e.examId}`) : undefined}
+      onDownload={handleDownload}
+      downloading={downloading}
     />
   );
 }

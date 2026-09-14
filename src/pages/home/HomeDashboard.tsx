@@ -10,8 +10,8 @@ import {
 import MarketingSection from '@/components/marketing/MarketingSection';
 import Chip from '@/components/ui/Chip';
 import EmptyState from '@/components/ui/EmptyState';
-import FeedCard from '@/components/ui/FeedCard';
 import GreetBar from '@/components/ui/GreetBar';
+import NewsCard from '@/components/ui/NewsCard';
 import Panel from '@/components/ui/Panel';
 import { fetchMessageUnreadCount } from '@/services/message';
 import { fetchNotificationUnreadCount } from '@/services/notification';
@@ -113,54 +113,11 @@ export default function HomeDashboard() {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: '1fr 320px',
+          gridTemplateColumns: '1fr 300px',
           gap: 22,
           alignItems: 'start',
         }}
       >
-        <Panel title="Lịch hôm nay">
-          {loading ? (
-            <div style={{ color: 'var(--ink-faint)', fontSize: 13 }}>
-              Đang tải…
-            </div>
-          ) : today.length === 0 ? (
-            <EmptyState
-              title="Không có buổi học nào"
-              description="Hôm nay bạn không có buổi học nào trong lịch."
-            />
-          ) : (
-            today.map((s) => (
-              <div
-                key={`${s.sessionId}-${s.studentId ?? ''}`}
-                onClick={() =>
-                  history.push(`/timetable/session/${s.sessionId}`, s)
-                }
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 12,
-                  padding: '12px 0',
-                  borderBottom: '1px solid var(--line-soft)',
-                  cursor: 'pointer',
-                }}
-              >
-                <span className="mono" style={{ fontWeight: 700, width: 88 }}>
-                  {s.startTime.slice(0, 5)}–{s.endTime.slice(0, 5)}
-                </span>
-                <Chip variant={SESSION_VARIANT[s.status] ?? 'neutral'}>
-                  {getStatusMeta('session', s.status).label}
-                </Chip>
-                <span style={{ fontWeight: 600 }}>{s.className}</span>
-                <span style={{ color: 'var(--ink-soft)', fontSize: 13 }}>
-                  {[s.roomName && `Phòng ${s.roomName}`, s.teacherName]
-                    .filter(Boolean)
-                    .join(' · ')}
-                </span>
-              </div>
-            ))
-          )}
-        </Panel>
-
         <Panel
           title="Bảng tin"
           extra={
@@ -190,16 +147,79 @@ export default function HomeDashboard() {
           ) : posts.length === 0 ? (
             <EmptyState title="Chưa có bài viết" />
           ) : (
-            posts.map((p, i) => (
-              <FeedCard
-                key={p.id}
-                title={p.title}
-                author="Trung tâm giáo dục DecaMath"
-                date={dayjs(p.publishedAt ?? p.createdAt).format('DD/MM/YYYY')}
-                pinned={p.pinned}
-                gradient={FEED_GRADIENTS[i % FEED_GRADIENTS.length]}
-                onClick={() => history.push(`/posts/${p.id}`)}
-              />
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+                gap: 16,
+              }}
+            >
+              {posts.map((p, i) => (
+                <NewsCard
+                  key={p.id}
+                  title={p.title}
+                  excerpt={p.summary}
+                  author="Trung tâm giáo dục DecaMath"
+                  date={dayjs(p.publishedAt ?? p.createdAt).format(
+                    'DD/MM/YYYY',
+                  )}
+                  pinned={p.pinned}
+                  coverImageUrl={p.coverImageUrl}
+                  gradient={FEED_GRADIENTS[i % FEED_GRADIENTS.length]}
+                  onClick={() => history.push(`/posts/${p.id}`)}
+                />
+              ))}
+            </div>
+          )}
+        </Panel>
+
+        <Panel title="Lịch hôm nay">
+          {loading ? (
+            <div style={{ color: 'var(--ink-faint)', fontSize: 13 }}>
+              Đang tải…
+            </div>
+          ) : today.length === 0 ? (
+            <EmptyState
+              title="Không có buổi học nào"
+              description="Hôm nay bạn không có buổi học nào trong lịch."
+            />
+          ) : (
+            today.map((s) => (
+              <div
+                key={`${s.sessionId}-${s.studentId ?? ''}`}
+                onClick={() =>
+                  history.push(`/timetable/session/${s.sessionId}`, s)
+                }
+                style={{
+                  padding: '12px 0',
+                  borderBottom: '1px solid var(--line-soft)',
+                  cursor: 'pointer',
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginBottom: 6,
+                  }}
+                >
+                  <span className="mono" style={{ fontWeight: 700 }}>
+                    {s.startTime.slice(0, 5)}–{s.endTime.slice(0, 5)}
+                  </span>
+                  <Chip variant={SESSION_VARIANT[s.status] ?? 'neutral'}>
+                    {getStatusMeta('session', s.status).label}
+                  </Chip>
+                </div>
+                <div style={{ fontWeight: 600, marginBottom: 2 }}>
+                  {s.className}
+                </div>
+                <div style={{ color: 'var(--ink-soft)', fontSize: 12.5 }}>
+                  {[s.roomName && `Phòng ${s.roomName}`, s.teacherName]
+                    .filter(Boolean)
+                    .join(' · ')}
+                </div>
+              </div>
             ))
           )}
         </Panel>

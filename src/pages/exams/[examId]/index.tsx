@@ -1,7 +1,8 @@
-import { useParams } from '@umijs/max';
+import { history, useParams } from '@umijs/max';
 import { Input, message, Switch } from 'antd';
 import React from 'react';
 import CountdownTimer from '@/components/CountdownTimer';
+import { ChevronLeftIcon } from '@/components/icons';
 import ImageFrame from '@/components/ImageFrame';
 import MathPreview from '@/components/MathPreview';
 import { PrimaryButton } from '@/components/ui/Buttons';
@@ -269,21 +270,44 @@ export default function ExamPage() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
+            gap: 12,
           }}
         >
-          <div style={{ minWidth: 0 }}>
-            <div
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+            <button
+              type="button"
+              aria-label="Quay lại"
+              onClick={() => history.back()}
               style={{
-                fontSize: 15,
-                fontWeight: 800,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 34,
+                height: 34,
+                flexShrink: 0,
+                border: '1px solid var(--line)',
+                borderRadius: 999,
+                background: 'var(--card)',
+                color: 'var(--ink)',
+                cursor: 'pointer',
               }}
             >
-              {paper.name}
-            </div>
-            <div style={{ fontSize: 11.5, color: 'var(--ink-faint)' }}>
-              {paper.code}
+              <ChevronLeftIcon width={18} height={18} />
+            </button>
+            <div style={{ minWidth: 0 }}>
+              <div
+                style={{
+                  fontSize: 15,
+                  fontWeight: 800,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {paper.name}
+              </div>
+              <div style={{ fontSize: 11.5, color: 'var(--ink-faint)' }}>
+                {paper.code}
+              </div>
             </div>
           </div>
           {!isReview && paper.deadline && (

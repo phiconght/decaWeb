@@ -175,3 +175,13 @@ export const InboxIcon = (p: IconProps) =>
     </>,
     p,
   );
+
+export const DownloadIcon = (p: IconProps) =>
+  base(
+    <>
+      <path d="M12 3.5v11" />
+      <path d="m7.5 10.5 4.5 4 4.5-4" />
+      <path d="M4.5 17.5v1.5a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5v-1.5" />
+    </>,
+    p,
+  );

@@ -1,14 +1,14 @@
 import { history, useAccess, useParams } from '@umijs/max';
 import { message } from 'antd';
 import React from 'react';
-import { CalendarIcon, PostIcon } from '@/components/icons';
+import { CalendarIcon, DownloadIcon, PostIcon } from '@/components/icons';
 import PageTitle from '@/components/PageTitle';
 import { OutlineButton, PrimaryButton } from '@/components/ui/Buttons';
 import Chip from '@/components/ui/Chip';
 import Crumb from '@/components/ui/Crumb';
 import EmptyState from '@/components/ui/EmptyState';
-import InfoGrid from '@/components/ui/InfoGrid';
 import { ListCard, ListRow } from '@/components/ui/ListCard';
+import { downloadExamPdf } from '@/services/exam';
 import {
   fetchSessionExams,
   fetchSessionVideos,
@@ -22,6 +22,7 @@ import type {
   ZoomLinkItem,
 } from '@/typings/session';
 import type { TimetableItem } from '@/typings/timetable';
+import { viDate } from '@/utils/date';
 import { getStatusMeta } from '@/utils/statusMeta';
 
 /** Trích video ID từ mọi dạng URL YouTube phổ biến (watch/short/embed/youtu.be). */
@@ -60,7 +61,6 @@ export default function SessionDetailPage() {
       : undefined,
   );
   const [videos, setVideos] = React.useState<SessionVideoItem[]>([]);
-  const [openVideoId, setOpenVideoId] = React.useState<number | undefined>();
   const [zoomLinks, setZoomLinks] = React.useState<ZoomLinkItem[]>([]);
   const [exams, setExams] = React.useState<SessionExamItem[]>([]);
   const [loading, setLoading] = React.useState(false);
@@ -148,138 +148,154 @@ export default function SessionDetailPage() {
               border: '1px solid var(--line)',
               borderRadius: 'var(--radius-lg)',
               boxShadow: 'var(--shadow-card)',
-              padding: 22,
+              padding: '16px 20px',
               marginBottom: 18,
             }}
           >
-            <InfoGrid
-              items={[
-                { k: 'Lớp', v: item.className },
-                { k: 'Môn', v: item.subjectName },
-                { k: 'Ngày', v: item.date },
-                {
-                  k: 'Giờ',
-                  v: `${item.startTime.slice(0, 5)}–${item.endTime.slice(0, 5)}`,
-                },
-                { k: 'Phòng', v: item.roomName ?? '—' },
-                { k: 'Giáo viên', v: item.teacherName ?? '—' },
-              ]}
-            />
             <div
               style={{
                 display: 'flex',
-                alignItems: 'center',
+                alignItems: 'flex-start',
+                justifyContent: 'space-between',
                 gap: 12,
-                flexWrap: 'wrap',
+                marginBottom: 8,
               }}
             >
+              <div style={{ minWidth: 0 }}>
+                <div style={{ fontSize: 16.5, fontWeight: 800 }}>
+                  {item.className}
+                </div>
+                {item.subjectName && (
+                  <div
+                    style={{
+                      fontSize: 12.5,
+                      color: 'var(--ink-soft)',
+                      marginTop: 2,
+                    }}
+                  >
+                    {item.subjectName}
+                  </div>
+                )}
+              </div>
               {(() => {
                 const meta = getStatusMeta('session', item.status);
                 return (
                   <Chip variant={toChipVariant(meta.color)}>{meta.label}</Chip>
                 );
               })()}
-              {item.attendanceStatus === 'CO_MAT' ||
-              item.attendanceStatus === 'TRE' ? (
-                <Chip variant="sage">Đã điểm danh</Chip>
-              ) : (
-                canCheckin && (
+            </div>
+            <div
+              style={{
+                fontSize: 12.5,
+                color: 'var(--ink-soft)',
+                display: 'flex',
+                flexWrap: 'wrap',
+                columnGap: 14,
+                rowGap: 4,
+              }}
+            >
+              <span>{viDate(item.date).format('dddd, DD/MM/YYYY')}</span>
+              <span className="mono">
+                {item.startTime.slice(0, 5)}–{item.endTime.slice(0, 5)}
+              </span>
+              <span>{item.roomName ?? 'Chưa xếp phòng'}</span>
+              {item.teacherName && <span>{item.teacherName}</span>}
+            </div>
+            {(item.attendanceStatus === 'CO_MAT' ||
+              item.attendanceStatus === 'TRE' ||
+              canCheckin) && (
+              <div style={{ marginTop: 12 }}>
+                {item.attendanceStatus === 'CO_MAT' ||
+                item.attendanceStatus === 'TRE' ? (
+                  <Chip variant="sage">Đã điểm danh</Chip>
+                ) : (
                   <PrimaryButton onClick={handleCheckin} disabled={checkingIn}>
                     {checkingIn ? 'Đang xử lý…' : 'Điểm danh'}
                   </PrimaryButton>
-                )
-              )}
-            </div>
+                )}
+              </div>
+            )}
           </div>
         )
       )}
 
-      <ListCard
-        title="Video bài giảng"
-        icon={<PostIcon width={16} height={16} />}
-        style={{ marginBottom: 18 }}
-      >
-        {videos.length === 0 ? (
-          <EmptyState title="Chưa có video" />
-        ) : (
-          videos.map((v) => {
-            const isOpen = openVideoId === v.videoId;
+      {videos.length > 0 && (
+        <ListCard
+          title="Video bài giảng"
+          icon={<PostIcon width={16} height={16} />}
+          style={{ marginBottom: 18 }}
+        >
+          {videos.map((v, i) => {
             const embedUrl = youtubeEmbedUrl(v.youtubeUrl);
             return (
-              <div key={v.videoId}>
-                <ListRow
-                  icon={<PostIcon width={18} height={18} />}
-                  title={v.title}
-                  right={
-                    <OutlineButton
-                      type="button"
-                      onClick={() =>
-                        setOpenVideoId(isOpen ? undefined : v.videoId)
-                      }
-                    >
-                      {isOpen ? 'Ẩn video' : 'Xem bài giảng'}
-                    </OutlineButton>
-                  }
-                />
-                {isOpen && (
-                  <div style={{ padding: '0 22px 18px' }}>
-                    {embedUrl ? (
-                      <div
-                        style={{
-                          position: 'relative',
-                          paddingTop: '56.25%',
-                          borderRadius: 12,
-                          overflow: 'hidden',
-                        }}
-                      >
-                        <iframe
-                          src={`${embedUrl}?autoplay=1`}
-                          title={v.title}
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                          style={{
-                            position: 'absolute',
-                            inset: 0,
-                            width: '100%',
-                            height: '100%',
-                            border: 'none',
-                          }}
-                        />
-                      </div>
-                    ) : (
-                      <EmptyState title="Không đọc được link video" />
-                    )}
-                    <a
-                      href={v.youtubeUrl}
-                      target="_blank"
-                      rel="noreferrer"
+              <div
+                key={v.videoId}
+                style={{
+                  padding: '16px 22px',
+                  borderBottom:
+                    i < videos.length - 1
+                      ? '1px solid var(--line-soft)'
+                      : undefined,
+                }}
+              >
+                <div
+                  style={{ fontSize: 14.5, fontWeight: 700, marginBottom: 10 }}
+                >
+                  {v.title}
+                </div>
+                {embedUrl ? (
+                  <div
+                    style={{
+                      position: 'relative',
+                      paddingTop: '56.25%',
+                      borderRadius: 12,
+                      overflow: 'hidden',
+                    }}
+                  >
+                    <iframe
+                      src={embedUrl}
+                      title={v.title}
+                      allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
                       style={{
-                        display: 'inline-block',
-                        marginTop: 10,
-                        fontSize: 12.5,
-                        color: 'var(--cobalt)',
-                        fontWeight: 600,
+                        position: 'absolute',
+                        inset: 0,
+                        width: '100%',
+                        height: '100%',
+                        border: 'none',
                       }}
-                    >
-                      Mở trên YouTube
-                    </a>
+                    />
                   </div>
+                ) : (
+                  <EmptyState title="Không đọc được link video" />
                 )}
+                <a
+                  href={v.youtubeUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{
+                    display: 'inline-block',
+                    marginTop: 10,
+                    fontSize: 12.5,
+                    color: 'var(--cobalt)',
+                    fontWeight: 600,
+                  }}
+                >
+                  Mở trên YouTube
+                </a>
               </div>
             );
-          })
-        )}
-      </ListCard>
+          })}
+        </ListCard>
+      )}
 
-      <ListCard
-        title="Link Zoom"
-        icon={<CalendarIcon width={16} height={16} />}
-        style={{ marginBottom: 18 }}
-      >
-        {zoomLinks.length === 0 ? (
-          <EmptyState title="Chưa có link Zoom" />
-        ) : (
-          zoomLinks.map((z) => (
+      {zoomLinks.length > 0 && (
+        <ListCard
+          title="Link Zoom"
+          icon={<CalendarIcon width={16} height={16} />}
+          style={{ marginBottom: 18 }}
+        >
+          {zoomLinks.map((z) => (
             <ListRow
               key={z.id}
               icon={<CalendarIcon width={18} height={18} />}
@@ -296,36 +312,61 @@ export default function SessionDetailPage() {
                 </a>
               }
             />
-          ))
-        )}
-      </ListCard>
+          ))}
+        </ListCard>
+      )}
 
-      <ListCard
-        title="Đề thi buổi học"
-        icon={<PostIcon width={16} height={16} />}
-      >
-        {exams.length === 0 ? (
-          <EmptyState title="Buổi học chưa có đề thi" />
-        ) : (
-          exams.map((e) => (
-            <ListRow
-              key={e.examId}
-              icon={<PostIcon width={18} height={18} />}
-              title={e.name}
-              subtitle={e.code}
-              right={
-                e.studentStatus && (
-                  <OutlineButton
-                    onClick={() => history.push(`/exams/${e.examId}`)}
-                  >
-                    {e.studentStatus === 'DA_LAM' ? 'Xem lại' : 'Làm bài'}
-                  </OutlineButton>
-                )
-              }
-            />
-          ))
-        )}
-      </ListCard>
+      {exams.length > 0 && (
+        <ListCard
+          title="Đề thi buổi học"
+          icon={<PostIcon width={16} height={16} />}
+        >
+          {exams.map((e) => (
+            <SessionExamRow key={e.examId} exam={e} />
+          ))}
+        </ListCard>
+      )}
     </>
+  );
+}
+
+/** 1 dòng đề thi buổi học — nút vào làm bài + nút tải PDF (BE tự chặn quyền). */
+function SessionExamRow({ exam: e }: { exam: SessionExamItem }) {
+  const [downloading, setDownloading] = React.useState(false);
+
+  const handleDownload = async () => {
+    setDownloading(true);
+    try {
+      await downloadExamPdf(e.examId);
+    } catch (err) {
+      message.error(err instanceof Error ? err.message : 'Tải PDF thất bại');
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  return (
+    <ListRow
+      icon={<PostIcon width={18} height={18} />}
+      title={e.name}
+      subtitle={e.code}
+      right={
+        <>
+          <OutlineButton
+            title="Tải đề thi PDF"
+            disabled={downloading}
+            onClick={handleDownload}
+            style={{ padding: '9px 10px' }}
+          >
+            <DownloadIcon width={16} height={16} />
+          </OutlineButton>
+          {e.studentStatus && (
+            <OutlineButton onClick={() => history.push(`/exams/${e.examId}`)}>
+              {e.studentStatus === 'DA_LAM' ? 'Xem lại' : 'Làm bài'}
+            </OutlineButton>
+          )}
+        </>
+      }
+    />
   );
 }
