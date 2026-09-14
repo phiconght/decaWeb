@@ -2,6 +2,8 @@ import { useParams } from '@umijs/max';
 import { Input, message, Switch } from 'antd';
 import React from 'react';
 import CountdownTimer from '@/components/CountdownTimer';
+import ImageFrame from '@/components/ImageFrame';
+import MathPreview from '@/components/MathPreview';
 import { PrimaryButton } from '@/components/ui/Buttons';
 import Chip from '@/components/ui/Chip';
 import Panel from '@/components/ui/Panel';
@@ -129,7 +131,18 @@ export default function ExamPage() {
             </Chip>
           )}
         </div>
-        <p style={{ fontSize: 14.5, margin: '0 0 14px' }}>{q.questionText}</p>
+        <MathPreview
+          content={q.questionText}
+          style={{ fontSize: 14.5, margin: '0 0 10px' }}
+        />
+        {q.questionImage && (
+          <ImageFrame
+            src={q.questionImage}
+            alt="Hình minh họa câu hỏi"
+            height={220}
+            style={{ marginBottom: 14 }}
+          />
+        )}
 
         {q.type === 'MULTIPLE_CHOICE' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -144,6 +157,9 @@ export default function ExamPage() {
                   disabled={isReview}
                   onClick={() => setMc(q.examExerciseId, o.id)}
                   style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 12,
                     textAlign: 'left',
                     padding: '10px 14px',
                     borderRadius: 10,
@@ -168,7 +184,10 @@ export default function ExamPage() {
                     fontSize: 14,
                   }}
                 >
-                  {o.text}
+                  <span style={{ flex: 1, minWidth: 0 }}>
+                    <MathPreview content={o.text} />
+                  </span>
+                  <ImageFrame src={o.image} alt="" size={56} />
                 </button>
               );
             })}
@@ -187,18 +206,20 @@ export default function ExamPage() {
                   onChange={(v) => setTf(q.examExerciseId, it.id, v)}
                   disabled={isReview}
                 />
-                <span
-                  style={
-                    isReview && it.answer != null
-                      ? {
-                          color: it.answer ? 'var(--sage)' : 'var(--coral)',
-                          fontWeight: 600,
-                        }
-                      : undefined
-                  }
-                >
-                  {it.text}
+                <span style={{ flex: 1, minWidth: 0 }}>
+                  <MathPreview
+                    content={it.text}
+                    style={
+                      isReview && it.answer != null
+                        ? {
+                            color: it.answer ? 'var(--sage)' : 'var(--coral)',
+                            fontWeight: 600,
+                          }
+                        : undefined
+                    }
+                  />
                 </span>
+                <ImageFrame src={it.image} alt="" size={56} />
               </div>
             ))}
           </div>
