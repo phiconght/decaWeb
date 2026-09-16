@@ -11,7 +11,14 @@ export default function Testimonials({ items }: { items: TestimonialItem[] }) {
       <h2 style={{ fontSize: 17, fontWeight: 800, margin: '0 0 14px' }}>
         Phụ huynh &amp; học sinh nói gì
       </h2>
-      <div style={{ display: 'flex', gap: 14, overflowX: 'auto', paddingBottom: 6 }}>
+      <div
+        style={{
+          display: 'flex',
+          gap: 14,
+          overflowX: 'auto',
+          paddingBottom: 6,
+        }}
+      >
         {items.map((t) => {
           const initials = t.name
             .trim()
@@ -32,7 +39,14 @@ export default function Testimonials({ items }: { items: TestimonialItem[] }) {
                 padding: 16,
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10,
+                  marginBottom: 8,
+                }}
+              >
                 <div
                   style={{
                     width: 36,
@@ -52,13 +66,24 @@ export default function Testimonials({ items }: { items: TestimonialItem[] }) {
                 </div>
                 <div>
                   <div style={{ fontWeight: 800, fontSize: 13 }}>{t.name}</div>
-                  <div style={{ fontSize: 11, color: 'var(--ink-soft)' }}>{t.meta}</div>
+                  <div style={{ fontSize: 11, color: 'var(--ink-soft)' }}>
+                    {t.meta}
+                  </div>
                 </div>
               </div>
-              <div style={{ color: 'var(--gold)', fontSize: 12, marginBottom: 6 }}>
+              <div
+                style={{ color: 'var(--gold)', fontSize: 12, marginBottom: 6 }}
+              >
                 {STAR.repeat(5)}
               </div>
-              <p style={{ fontSize: 12.5, color: 'var(--ink-soft)', lineHeight: 1.55, margin: 0 }}>
+              <p
+                style={{
+                  fontSize: 12.5,
+                  color: 'var(--ink-soft)',
+                  lineHeight: 1.55,
+                  margin: 0,
+                }}
+              >
                 {t.quote}
               </p>
             </div>

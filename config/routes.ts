@@ -31,6 +31,7 @@ export default [
     icon: 'appstore',
     component: './catalog',
   },
+  { path: '/catalog/:id', component: './catalog/[id]' },
   {
     path: '/courses',
     name: 'courses',

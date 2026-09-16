@@ -25,12 +25,18 @@ import type {
 const base = '/api/v1/reports';
 
 async function get<T>(path: string, params?: Record<string, unknown>) {
-  const res = await request<ApiResponse<T>>(`${base}${path}`, { method: 'GET', params });
+  const res = await request<ApiResponse<T>>(`${base}${path}`, {
+    method: 'GET',
+    params,
+  });
   return res.data;
 }
 
 async function post<T>(path: string, data?: unknown) {
-  const res = await request<ApiResponse<T>>(`${base}${path}`, { method: 'POST', data });
+  const res = await request<ApiResponse<T>>(`${base}${path}`, {
+    method: 'POST',
+    data,
+  });
   return res.data;
 }
 
@@ -40,10 +46,13 @@ export const fetchStudentClasses = (studentId: number) =>
   get<StudentClassOption[]>(`/students/${studentId}/classes`);
 
 /** GET /reports/my-classes — tự scope theo STUDENT đang đăng nhập, không cần biết id của mình. */
-export const fetchMyReportClasses = () => get<StudentClassOption[]>('/my-classes');
+export const fetchMyReportClasses = () =>
+  get<StudentClassOption[]>('/my-classes');
 
 export const fetchPracticeAssignments = (studentId: number) =>
-  get<PracticeAssignmentResponse[]>(`/students/${studentId}/practice-assignments`);
+  get<PracticeAssignmentResponse[]>(
+    `/students/${studentId}/practice-assignments`,
+  );
 
 export const fetchRecentExams = (studentId: number, limit?: number) =>
   get<RecentExamItem[]>(`/students/${studentId}/recent-exams`, { limit });
@@ -51,14 +60,32 @@ export const fetchRecentExams = (studentId: number, limit?: number) =>
 export const fetchExamHistory = (studentId: number, classId: number) =>
   get<RecentExamItem[]>(`/students/${studentId}/exam-history`, { classId });
 
-export const fetchExamReportDetail = (studentId: number, examId: number, classId?: number) =>
+export const fetchExamReportDetail = (
+  studentId: number,
+  examId: number,
+  classId?: number,
+) =>
   get<ExamReportDetail>(`/students/${studentId}/exams/${examId}`, { classId });
 
-export const fetchScoreTrend = (studentId: number, classId: number, topicId?: number) =>
-  get<ScoreTrendPoint[]>(`/students/${studentId}/classes/${classId}/score-trend`, { topicId });
+export const fetchScoreTrend = (
+  studentId: number,
+  classId: number,
+  topicId?: number,
+) =>
+  get<ScoreTrendPoint[]>(
+    `/students/${studentId}/classes/${classId}/score-trend`,
+    { topicId },
+  );
 
-export const fetchBreakdowns = (studentId: number, classId: number, topicId?: number) =>
-  get<BreakdownResponse>(`/students/${studentId}/classes/${classId}/breakdowns`, { topicId });
+export const fetchBreakdowns = (
+  studentId: number,
+  classId: number,
+  topicId?: number,
+) =>
+  get<BreakdownResponse>(
+    `/students/${studentId}/classes/${classId}/breakdowns`,
+    { topicId },
+  );
 
 export const fetchExamScoreDistribution = (
   studentId: number,
@@ -66,42 +93,89 @@ export const fetchExamScoreDistribution = (
   classId?: number,
   bandCount?: number,
 ) =>
-  get<ExamScoreDistribution>(`/students/${studentId}/exams/${examId}/score-distribution`, {
-    classId,
-    bandCount,
-  });
+  get<ExamScoreDistribution>(
+    `/students/${studentId}/exams/${examId}/score-distribution`,
+    {
+      classId,
+      bandCount,
+    },
+  );
 
 /** Phổ điểm toàn khóa (điểm TB HV) — cấp học viên, không phải cấp lớp dù tên hàm cũ gợi ý vậy. */
-export const fetchCourseScoreDistribution = (studentId: number, classId: number, bandCount?: number) =>
-  get<ExamScoreDistribution>(`/students/${studentId}/classes/${classId}/score-distribution`, {
-    bandCount,
-  });
+export const fetchCourseScoreDistribution = (
+  studentId: number,
+  classId: number,
+  bandCount?: number,
+) =>
+  get<ExamScoreDistribution>(
+    `/students/${studentId}/classes/${classId}/score-distribution`,
+    {
+      bandCount,
+    },
+  );
 
-export const fetchChapterAnalysis = (studentId: number, classId: number, topicId: number) =>
-  get<ChapterAnalysisResponse>(`/students/${studentId}/classes/${classId}/topics/${topicId}/analysis`);
+export const fetchChapterAnalysis = (
+  studentId: number,
+  classId: number,
+  topicId: number,
+) =>
+  get<ChapterAnalysisResponse>(
+    `/students/${studentId}/classes/${classId}/topics/${topicId}/analysis`,
+  );
 
-export const fetchSessionAnalysis = (studentId: number, classId: number, sessionId: number) =>
+export const fetchSessionAnalysis = (
+  studentId: number,
+  classId: number,
+  sessionId: number,
+) =>
   get<SessionAnalysisResponse>(
     `/students/${studentId}/classes/${classId}/sessions/${sessionId}/analysis`,
   );
 
 /** Bảng "Phân tích tự động" cấp toàn khóa — đầu báo cáo cá nhân. */
 export const fetchReportAnalysis = (studentId: number, classId: number) =>
-  get<ReportAnalysisResponse>(`/students/${studentId}/classes/${classId}/analysis`);
+  get<ReportAnalysisResponse>(
+    `/students/${studentId}/classes/${classId}/analysis`,
+  );
 
-export const fetchExamAnalysis = (studentId: number, examId: number, classId?: number) =>
-  get<ExamAnalysisResponse>(`/students/${studentId}/exams/${examId}/analysis`, { classId });
+export const fetchExamAnalysis = (
+  studentId: number,
+  examId: number,
+  classId?: number,
+) =>
+  get<ExamAnalysisResponse>(`/students/${studentId}/exams/${examId}/analysis`, {
+    classId,
+  });
 
 export const fetchTopicMastery = (studentId: number, classId: number) =>
-  get<TopicMasteryItem[]>(`/students/${studentId}/classes/${classId}/topic-mastery`);
+  get<TopicMasteryItem[]>(
+    `/students/${studentId}/classes/${classId}/topic-mastery`,
+  );
 
-export const fetchStudentAttendance = (studentId: number, classId: number, topicId?: number) =>
-  get<StudentAttendanceReport>(`/students/${studentId}/classes/${classId}/attendance`, { topicId });
+export const fetchStudentAttendance = (
+  studentId: number,
+  classId: number,
+  topicId?: number,
+) =>
+  get<StudentAttendanceReport>(
+    `/students/${studentId}/classes/${classId}/attendance`,
+    { topicId },
+  );
 
-export const fetchSessionExams = (studentId: number, classId: number, sessionId: number) =>
-  get<RecentExamItem[]>(`/students/${studentId}/classes/${classId}/sessions/${sessionId}/exams`);
+export const fetchSessionExams = (
+  studentId: number,
+  classId: number,
+  sessionId: number,
+) =>
+  get<RecentExamItem[]>(
+    `/students/${studentId}/classes/${classId}/sessions/${sessionId}/exams`,
+  );
 
-export const fetchSessionBreakdowns = (studentId: number, classId: number, sessionId: number) =>
+export const fetchSessionBreakdowns = (
+  studentId: number,
+  classId: number,
+  sessionId: number,
+) =>
   get<BreakdownResponse>(
     `/students/${studentId}/classes/${classId}/sessions/${sessionId}/breakdowns`,
   );
@@ -129,7 +203,11 @@ export const addComment = (payload: {
   visibleToStudent: boolean;
 }) => post<void>('/comments', payload);
 
-export const assignPractice = (studentId: number, classId: number, payload?: AssignPracticeRequest) =>
+export const assignPractice = (
+  studentId: number,
+  classId: number,
+  payload?: AssignPracticeRequest,
+) =>
   post<PracticeAssignmentResponse>(
     `/students/${studentId}/classes/${classId}/assign-practice`,
     payload,
@@ -144,13 +222,30 @@ export const fetchClassTopicMastery = (classId: number) =>
   get<TopicMasteryItem[]>(`/classes/${classId}/topic-mastery`);
 
 export const fetchClassSessionExams = (classId: number, sessionId: number) =>
-  get<ClassExamAverageItem[]>(`/classes/${classId}/sessions/${sessionId}/exams`);
+  get<ClassExamAverageItem[]>(
+    `/classes/${classId}/sessions/${sessionId}/exams`,
+  );
 
-export const fetchClassSessionBreakdowns = (classId: number, sessionId: number) =>
-  get<BreakdownResponse>(`/classes/${classId}/sessions/${sessionId}/breakdowns`);
+export const fetchClassSessionBreakdowns = (
+  classId: number,
+  sessionId: number,
+) =>
+  get<BreakdownResponse>(
+    `/classes/${classId}/sessions/${sessionId}/breakdowns`,
+  );
 
-export const fetchClassExamScoreDistribution = (classId: number, examId: number) =>
-  get<ExamScoreDistribution>(`/classes/${classId}/exams/${examId}/score-distribution`);
+export const fetchClassExamScoreDistribution = (
+  classId: number,
+  examId: number,
+) =>
+  get<ExamScoreDistribution>(
+    `/classes/${classId}/exams/${examId}/score-distribution`,
+  );
 
-export const fetchClassCourseScoreDistribution = (classId: number, bandCount?: number) =>
-  get<ExamScoreDistribution>(`/classes/${classId}/score-distribution`, { bandCount });
+export const fetchClassCourseScoreDistribution = (
+  classId: number,
+  bandCount?: number,
+) =>
+  get<ExamScoreDistribution>(`/classes/${classId}/score-distribution`, {
+    bandCount,
+  });

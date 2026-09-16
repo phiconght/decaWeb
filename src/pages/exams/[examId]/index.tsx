@@ -2,8 +2,8 @@ import { history, useParams } from '@umijs/max';
 import { Input, message, Switch } from 'antd';
 import React from 'react';
 import CountdownTimer from '@/components/CountdownTimer';
-import { ChevronLeftIcon } from '@/components/icons';
 import ImageFrame from '@/components/ImageFrame';
+import { ChevronLeftIcon } from '@/components/icons';
 import MathPreview from '@/components/MathPreview';
 import { PrimaryButton } from '@/components/ui/Buttons';
 import Chip from '@/components/ui/Chip';
@@ -273,7 +273,14 @@ export default function ExamPage() {
             gap: 12,
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10,
+              minWidth: 0,
+            }}
+          >
             <button
               type="button"
               aria-label="Quay lại"

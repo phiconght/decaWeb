@@ -19,7 +19,10 @@ export async function fetchTimetable(
 
 /** POST /sessions/{id}/self-checkin — điểm danh tự bấm nút cho buổi ONLINE (không cần QR). */
 export async function selfCheckin(sessionId: number) {
-  await request<ApiResponse<void>>(`/api/v1/sessions/${sessionId}/self-checkin`, {
-    method: 'POST',
-  });
+  await request<ApiResponse<void>>(
+    `/api/v1/sessions/${sessionId}/self-checkin`,
+    {
+      method: 'POST',
+    },
+  );
 }

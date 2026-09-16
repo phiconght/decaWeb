@@ -96,9 +96,9 @@ export default function TeacherWorkPage() {
 
       <Panel style={{ marginBottom: 20 }}>
         <div
+          className="teacher-work-stats-grid"
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
             gap: 16,
           }}
         >

@@ -12,7 +12,12 @@ const AttendanceMonthChart = ({
   height?: number;
 }) => {
   if (!points.length) {
-    return <Empty description="Chưa có dữ liệu" image={Empty.PRESENTED_IMAGE_SIMPLE} />;
+    return (
+      <Empty
+        description="Chưa có dữ liệu"
+        image={Empty.PRESENTED_IMAGE_SIMPLE}
+      />
+    );
   }
 
   const rows = points.flatMap((p) => [
@@ -33,7 +38,12 @@ const AttendanceMonthChart = ({
       scale={{
         color: {
           domain: ['Có mặt', 'Trễ', 'Vắng', 'Có phép'],
-          range: [REPORT_COLORS.coMat, REPORT_COLORS.tre, REPORT_COLORS.vang, REPORT_COLORS.coPhep],
+          range: [
+            REPORT_COLORS.coMat,
+            REPORT_COLORS.tre,
+            REPORT_COLORS.vang,
+            REPORT_COLORS.coPhep,
+          ],
         },
       }}
       axis={{ x: { title: false }, y: { title: false } }}

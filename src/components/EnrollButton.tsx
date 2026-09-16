@@ -1,5 +1,5 @@
 import { history } from '@umijs/max';
-import { message, Modal } from 'antd';
+import { Modal, message } from 'antd';
 import React from 'react';
 import { PrimaryButton } from '@/components/ui/Buttons';
 import Chip from '@/components/ui/Chip';
@@ -59,7 +59,9 @@ export default function EnrollButton({
       content: notEnough
         ? `Cần ${money(coinPrice)} Xu, bạn chỉ có ${money(balance ?? 0)} Xu — không đủ để đăng ký.`
         : `Đăng ký khóa "${item.name}" sẽ trừ ${money(coinPrice)} Xu` +
-          (balance !== undefined ? ` (số dư hiện tại: ${money(balance)} Xu).` : '.') +
+          (balance !== undefined
+            ? ` (số dư hiện tại: ${money(balance)} Xu).`
+            : '.') +
           ' Bạn có chắc chắn?',
       okText: notEnough ? 'Đã hiểu' : 'Đăng ký',
       cancelText: notEnough ? undefined : 'Hủy',

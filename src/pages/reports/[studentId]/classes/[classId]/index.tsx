@@ -4,6 +4,7 @@ import React from 'react';
 import AttendanceDonut from '@/components/charts/AttendanceDonut';
 import ScoreTrendChart from '@/components/charts/ScoreTrendChart';
 import TopicMasteryChart from '@/components/charts/TopicMasteryChart';
+import PageTitle from '@/components/PageTitle';
 import AnalysisCard from '@/components/reports/AnalysisCard';
 import AssignPracticeButton from '@/components/reports/AssignPracticeButton';
 import AttendanceMiniStats from '@/components/reports/AttendanceMiniStats';
@@ -14,7 +15,6 @@ import {
   RecentExamCardsRow,
   SessionCardsRow,
 } from '@/components/reports/HScrollCards';
-import PageTitle from '@/components/PageTitle';
 import Panel from '@/components/ui/Panel';
 import { fetchClassOutline } from '@/services/classOutline';
 import {
@@ -44,7 +44,10 @@ type Tab = 'exams' | 'sessions' | 'chapters';
  * mirror MOBILE `StudentReportView` (`reports/view/student_report_view.dart`).
  */
 export default function StudentClassReportPage() {
-  const { studentId, classId } = useParams<{ studentId: string; classId: string }>();
+  const { studentId, classId } = useParams<{
+    studentId: string;
+    classId: string;
+  }>();
   const access = useAccess();
   const sid = Number(studentId);
   const cid = Number(classId);
@@ -57,10 +60,16 @@ export default function StudentClassReportPage() {
   const [exams, setExams] = React.useState<RecentExamItem[]>([]);
   const [sessions, setSessions] = React.useState<OutlineSession[]>([]);
   const [trend, setTrend] = React.useState<ScoreTrendPoint[]>([]);
-  const [breakdown, setBreakdown] = React.useState<BreakdownResponse | undefined>();
+  const [breakdown, setBreakdown] = React.useState<
+    BreakdownResponse | undefined
+  >();
   const [mastery, setMastery] = React.useState<TopicMasteryItem[]>([]);
-  const [attendance, setAttendance] = React.useState<StudentAttendanceReport | undefined>();
-  const [analysis, setAnalysis] = React.useState<ReportAnalysisResponse | undefined>();
+  const [attendance, setAttendance] = React.useState<
+    StudentAttendanceReport | undefined
+  >();
+  const [analysis, setAnalysis] = React.useState<
+    ReportAnalysisResponse | undefined
+  >();
 
   // GV mở từ 1 lớp cụ thể: chỉ hiện lớp này, tránh 403 lớp khác (mirror `fixedClass`).
   React.useEffect(() => {
@@ -84,11 +93,19 @@ export default function StudentClassReportPage() {
         setAttendance(att);
         setAnalysis(an);
 
-        const chapterOrder = outline.groups.filter((g) => g.topicId != null).map((g) => g.topicId);
+        const chapterOrder = outline.groups
+          .filter((g) => g.topicId != null)
+          .map((g) => g.topicId);
         setMastery(
           m
-            .filter((x) => x.topicId != null && chapterOrder.includes(x.topicId))
-            .sort((a, b2) => chapterOrder.indexOf(a.topicId) - chapterOrder.indexOf(b2.topicId)),
+            .filter(
+              (x) => x.topicId != null && chapterOrder.includes(x.topicId),
+            )
+            .sort(
+              (a, b2) =>
+                chapterOrder.indexOf(a.topicId) -
+                chapterOrder.indexOf(b2.topicId),
+            ),
         );
 
         const flatSessions = outline.groups
@@ -116,15 +133,29 @@ export default function StudentClassReportPage() {
       </div>
 
       {loading && (
-        <div style={{ color: 'var(--ink-faint)', fontSize: 13, marginBottom: 12 }}>Đang tải…</div>
+        <div
+          style={{ color: 'var(--ink-faint)', fontSize: 13, marginBottom: 12 }}
+        >
+          Đang tải…
+        </div>
       )}
 
       {activeClasses.length > 1 && (
-        <div style={{ display: 'flex', gap: 8, overflowX: 'auto', marginBottom: 16 }}>
+        <div
+          style={{
+            display: 'flex',
+            gap: 8,
+            overflowX: 'auto',
+            marginBottom: 16,
+          }}
+        >
           {activeClasses.map((c) => (
             <div
               key={c.classId}
-              onClick={() => c.classId !== cid && history.push(`/reports/${sid}/classes/${c.classId}`)}
+              onClick={() =>
+                c.classId !== cid &&
+                history.push(`/reports/${sid}/classes/${c.classId}`)
+              }
               style={{
                 flex: '0 0 auto',
                 padding: '8px 16px',
@@ -145,7 +176,11 @@ export default function StudentClassReportPage() {
 
       {canComment && (
         <div style={{ marginBottom: 16 }}>
-          <AssignPracticeButton studentId={sid} classId={cid} scopeLabel="toàn khóa" />
+          <AssignPracticeButton
+            studentId={sid}
+            classId={cid}
+            scopeLabel="toàn khóa"
+          />
         </div>
       )}
 
@@ -166,21 +201,27 @@ export default function StudentClassReportPage() {
           {tab === 'exams' && (
             <RecentExamCardsRow
               exams={exams}
-              onTap={(e) => history.push(`/reports/${sid}/classes/${cid}/exams/${e.examId}`)}
+              onTap={(e) =>
+                history.push(`/reports/${sid}/classes/${cid}/exams/${e.examId}`)
+              }
             />
           )}
           {tab === 'sessions' && (
             <SessionCardsRow
               sessions={sessions}
               onTap={(sessionId) =>
-                history.push(`/reports/${sid}/classes/${cid}/sessions/${sessionId}`)
+                history.push(
+                  `/reports/${sid}/classes/${cid}/sessions/${sessionId}`,
+                )
               }
             />
           )}
           {tab === 'chapters' && (
             <ChapterCardsRow
               topics={mastery}
-              onTap={(topicId) => history.push(`/reports/${sid}/classes/${cid}/topics/${topicId}`)}
+              onTap={(topicId) =>
+                history.push(`/reports/${sid}/classes/${cid}/topics/${topicId}`)
+              }
             />
           )}
         </Panel>

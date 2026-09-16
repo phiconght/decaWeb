@@ -207,3 +207,77 @@ a {
     padding: 24px 20px 48px;
   }
 }
+
+/** Layout 2 cột (nội dung + khối đăng ký) của trang chi tiết khóa học — xếp
+ * dọc dưới 860px, giống quy ước responsive đã dùng ở bản thiết kế. */
+.course-detail-grid {
+  display: grid;
+  grid-template-columns: 1.55fr 1fr;
+  gap: 22px;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .course-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/** InfoGrid dùng chung (chi tiết khóa học, đề thi, báo cáo...) — luôn về 1 cột
+ * dưới 768px dù trang gọi truyền `columns` bao nhiêu, tránh vỡ layout trên điện thoại. */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--info-grid-cols, 2), 1fr);
+  gap: 18px 40px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/** Trang chủ: bảng tin + widget rail — xếp dọc dưới 899px, cùng mốc với AppShell. */
+.home-dashboard-grid {
+  grid-template-columns: 1fr 300px;
+}
+
+@media (max-width: 899px) {
+  .home-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/** Chấm công giáo viên: 4 ô thống kê — 2 cột ở tablet, 1 cột ở điện thoại nhỏ. */
+.teacher-work-stats-grid {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 899px) {
+  .teacher-work-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .teacher-work-stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/** Tier riêng cho điện thoại nhỏ (≤480px) — tinh chỉnh thêm dưới mốc 899px đã có. */
+@media (max-width: 480px) {
+  .app-content {
+    padding: 16px 14px 40px;
+  }
+
+  .public-content {
+    padding: 16px 14px 40px;
+  }
+
+  .public-header {
+    padding: 0 16px;
+    gap: 16px;
+  }
+}

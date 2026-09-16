@@ -8,9 +8,18 @@ import type { ExamScoreDistribution } from '@/typings/report';
  * histogram ngang vẽ tay bằng CustomPaint; ở đây dùng bar chart chuẩn của
  * `@ant-design/plots`, cùng thông tin, khác kỹ thuật vẽ).
  */
-export default function CourseScoreSpectrum({ data }: { data?: ExamScoreDistribution }) {
+export default function CourseScoreSpectrum({
+  data,
+}: {
+  data?: ExamScoreDistribution;
+}) {
   if (!data || data.bands.length === 0) {
-    return <Empty description="Chưa đủ dữ liệu phổ điểm" image={Empty.PRESENTED_IMAGE_SIMPLE} />;
+    return (
+      <Empty
+        description="Chưa đủ dữ liệu phổ điểm"
+        image={Empty.PRESENTED_IMAGE_SIMPLE}
+      />
+    );
   }
   const rows = data.bands.map((b) => ({
     band: `${b.fromScore.toFixed(1)}–${b.toScore.toFixed(1)}`,
@@ -34,11 +43,20 @@ export default function CourseScoreSpectrum({ data }: { data?: ExamScoreDistribu
         xField="band"
         yField="count"
         colorField="mine"
-        scale={{ color: { domain: [true, false], range: [tokens.cobalt, '#B45309'] } }}
+        scale={{
+          color: { domain: [true, false], range: [tokens.cobalt, '#B45309'] },
+        }}
         axis={{ x: { title: false }, y: { title: false } }}
         legend={false}
       />
-      <div style={{ textAlign: 'center', fontSize: 12, color: 'var(--ink-soft)', marginTop: 6 }}>
+      <div
+        style={{
+          textAlign: 'center',
+          fontSize: 12,
+          color: 'var(--ink-soft)',
+          marginTop: 6,
+        }}
+      >
         {caption}
       </div>
     </div>

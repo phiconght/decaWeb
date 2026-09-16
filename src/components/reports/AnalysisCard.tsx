@@ -4,7 +4,11 @@ import type { ReportAnalysisResponse } from '@/typings/report';
 import AnalysisCardShell, { fmt, InsightList } from './AnalysisCardShell';
 
 /** Bảng "Phân tích tự động" cấp toàn khóa — mirror MOBILE `analysis_card.dart`. */
-export default function AnalysisCard({ analysis }: { analysis?: ReportAnalysisResponse }) {
+export default function AnalysisCard({
+  analysis,
+}: {
+  analysis?: ReportAnalysisResponse;
+}) {
   if (!analysis) return null;
   const a = analysis;
   return (
@@ -14,7 +18,9 @@ export default function AnalysisCard({ analysis }: { analysis?: ReportAnalysisRe
       </div>
       <div style={{ fontSize: 13.5, marginTop: 4 }}>
         Điểm TB toàn khóa: <b>{fmt(a.courseAverage)}</b>
-        {a.courseRank != null ? ` — Hạng ${a.courseRank}/${a.classSize ?? '—'}` : ''}
+        {a.courseRank != null
+          ? ` — Hạng ${a.courseRank}/${a.classSize ?? '—'}`
+          : ''}
       </div>
 
       {a.chapters.length > 0 && (
@@ -26,7 +32,9 @@ export default function AnalysisCard({ analysis }: { analysis?: ReportAnalysisRe
             {a.chapters.map((c, i) => (
               <Chip key={c.topicId ?? i} variant="neutral">
                 {c.chapterLabel}: {fmt(c.avgScore)}
-                {c.rank != null ? ` (hạng ${c.rank}/${c.classSize ?? '—'})` : ''}
+                {c.rank != null
+                  ? ` (hạng ${c.rank}/${c.classSize ?? '—'})`
+                  : ''}
               </Chip>
             ))}
           </div>
@@ -47,7 +55,9 @@ export default function AnalysisCard({ analysis }: { analysis?: ReportAnalysisRe
           <div style={{ fontSize: 13, fontWeight: 700 }}>
             Nhận xét của {a.teacherCommentAuthor} (GV):
           </div>
-          <div style={{ fontSize: 13, marginTop: 4 }}>{a.teacherCommentContent}</div>
+          <div style={{ fontSize: 13, marginTop: 4 }}>
+            {a.teacherCommentContent}
+          </div>
         </div>
       )}
     </AnalysisCardShell>

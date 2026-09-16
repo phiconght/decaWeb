@@ -1,4 +1,4 @@
-import { Button, Modal, Tooltip, message } from 'antd';
+import { Button, Modal, message, Tooltip } from 'antd';
 import React from 'react';
 import { assignPractice } from '@/services/report';
 import type { PracticeAssignmentResponse } from '@/typings/report';
@@ -33,13 +33,15 @@ export default function AssignPracticeButton({
           <div style={{ fontWeight: 700 }}>{r.examName}</div>
           <div>Chuyên đề: {r.topicName ?? '—'}</div>
           <div>
-            Số câu: {r.numQuestions} — Dễ {r.byDifficulty.easy}/TB {r.byDifficulty.medium}/Khó{' '}
-            {r.byDifficulty.hard}
+            Số câu: {r.numQuestions} — Dễ {r.byDifficulty.easy}/TB{' '}
+            {r.byDifficulty.medium}/Khó {r.byDifficulty.hard}
           </div>
           <div>
             Dạng: TN {r.byType.multipleChoice}/ĐS {r.byType.trueFalse}
           </div>
-          {r.deadline && <div>Hạn: {new Date(r.deadline).toLocaleDateString('vi-VN')}</div>}
+          {r.deadline && (
+            <div>Hạn: {new Date(r.deadline).toLocaleDateString('vi-VN')}</div>
+          )}
         </div>
       ),
     });
@@ -66,9 +68,18 @@ export default function AssignPracticeButton({
   };
 
   const button = (
-    <Button type="primary" loading={assigning} disabled={!enabled} onClick={onClick}>
+    <Button
+      type="primary"
+      loading={assigning}
+      disabled={!enabled}
+      onClick={onClick}
+    >
       Giao bài tập
     </Button>
   );
-  return disabledReason && !enabled ? <Tooltip title={disabledReason}>{button}</Tooltip> : button;
+  return disabledReason && !enabled ? (
+    <Tooltip title={disabledReason}>{button}</Tooltip>
+  ) : (
+    button
+  );
 }

@@ -16,10 +16,20 @@ function HScrollRow({
   render: () => React.ReactNode[];
 }) {
   if (items.length === 0) {
-    return <div style={{ fontSize: 13, color: 'var(--ink-faint)' }}>{emptyText}</div>;
+    return (
+      <div style={{ fontSize: 13, color: 'var(--ink-faint)' }}>{emptyText}</div>
+    );
   }
   return (
-    <div style={{ display: 'flex', gap: 8, overflowX: 'auto', height, paddingBottom: 4 }}>
+    <div
+      style={{
+        display: 'flex',
+        gap: 8,
+        overflowX: 'auto',
+        height,
+        paddingBottom: 4,
+      }}
+    >
       {render()}
     </div>
   );
@@ -61,14 +71,21 @@ export function RecentExamCardsRow({
       emptyText="Chưa có bài thi đã nộp."
       render={() =>
         exams.map((e) => {
-          const ratio = e.score != null && e.maxScore ? e.score / e.maxScore : undefined;
+          const ratio =
+            e.score != null && e.maxScore ? e.score / e.maxScore : undefined;
           const color = scoreColor(ratio);
           return (
-            <div key={e.examStudentId} style={cardStyle()} onClick={() => onTap(e)}>
+            <div
+              key={e.examStudentId}
+              style={cardStyle()}
+              onClick={() => onTap(e)}
+            >
               <div style={{ fontSize: 18, fontWeight: 800, color }}>
                 {e.score != null ? e.score.toFixed(1) : '—'}
               </div>
-              <div style={{ fontSize: 11, marginTop: 2, ...ellipsis }}>{e.examName}</div>
+              <div style={{ fontSize: 11, marginTop: 2, ...ellipsis }}>
+                {e.examName}
+              </div>
               {e.submittedAt && (
                 <div style={{ fontSize: 10, color: 'var(--ink-faint)' }}>
                   {new Date(e.submittedAt).toLocaleDateString('vi-VN', {
@@ -100,11 +117,22 @@ export function SessionCardsRow({
       emptyText="Chưa có buổi học nào."
       render={() =>
         sessions.map((s) => (
-          <div key={s.sessionId} style={cardStyle()} onClick={() => onTap(s.sessionId)}>
-            <div style={{ fontSize: 13, fontWeight: 800 }}>Buổi {s.ordinal ?? '—'}</div>
-            <div style={{ fontSize: 11, marginTop: 2, ...ellipsis }}>{s.title ?? 'Chưa đặt tên'}</div>
+          <div
+            key={s.sessionId}
+            style={cardStyle()}
+            onClick={() => onTap(s.sessionId)}
+          >
+            <div style={{ fontSize: 13, fontWeight: 800 }}>
+              Buổi {s.ordinal ?? '—'}
+            </div>
+            <div style={{ fontSize: 11, marginTop: 2, ...ellipsis }}>
+              {s.title ?? 'Chưa đặt tên'}
+            </div>
             <div style={{ fontSize: 10, color: 'var(--ink-faint)' }}>
-              {new Date(s.date).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' })}
+              {new Date(s.date).toLocaleDateString('vi-VN', {
+                day: '2-digit',
+                month: '2-digit',
+              })}
             </div>
           </div>
         ))
@@ -129,13 +157,24 @@ export function ChapterCardsRow({
       emptyText="Chưa có chương nào."
       render={() =>
         items.map((t) => {
-          const color = t.masteryPct != null ? scoreColor(t.masteryPct) : 'var(--ink-faint)';
+          const color =
+            t.masteryPct != null
+              ? scoreColor(t.masteryPct)
+              : 'var(--ink-faint)';
           return (
-            <div key={t.topicId} style={cardStyle()} onClick={() => onTap(t.topicId as number)}>
+            <div
+              key={t.topicId}
+              style={cardStyle()}
+              onClick={() => onTap(t.topicId as number)}
+            >
               <div style={{ fontSize: 16, fontWeight: 800, color }}>
-                {t.masteryPct != null ? `${Math.round(t.masteryPct * 100)}%` : '—'}
+                {t.masteryPct != null
+                  ? `${Math.round(t.masteryPct * 100)}%`
+                  : '—'}
               </div>
-              <div style={{ fontSize: 11, marginTop: 2, ...ellipsis }}>{t.topicName}</div>
+              <div style={{ fontSize: 11, marginTop: 2, ...ellipsis }}>
+                {t.topicName}
+              </div>
             </div>
           );
         })
@@ -159,12 +198,18 @@ export function ExamCardsRow({
       emptyText="Chưa có đề thi."
       render={() =>
         exams.map((e) => {
-          const ratio = e.score != null && e.maxScore ? e.score / e.maxScore : undefined;
+          const ratio =
+            e.score != null && e.maxScore ? e.score / e.maxScore : undefined;
           const color = ratio != null ? scoreColor(ratio) : 'var(--ink-faint)';
           return (
             <div
               key={e.examId}
-              style={{ ...cardStyle(color), flexBasis: 160, width: 160, padding: 12 }}
+              style={{
+                ...cardStyle(color),
+                flexBasis: 160,
+                width: 160,
+                padding: 12,
+              }}
               onClick={() => onTap(e)}
             >
               <div style={{ fontSize: 22, fontWeight: 800, color }}>

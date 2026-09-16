@@ -1,4 +1,8 @@
-import { ArrowLeftOutlined, LockOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  ArrowLeftOutlined,
+  LockOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 import { LoginForm, ProFormText } from '@ant-design/pro-components';
 import { history, Link, useModel } from '@umijs/max';
 import { message } from 'antd';

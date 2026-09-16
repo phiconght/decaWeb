@@ -3,10 +3,21 @@ import { Empty } from 'antd';
 import type { TopicMasteryItem } from '@/typings/report';
 
 // Copy từ ADMIN/src/pages/report/components/TopicMasteryChart.tsx (§1 #9).
-const TopicMasteryChart = ({ items, height = 320 }: { items: TopicMasteryItem[]; height?: number }) => {
+const TopicMasteryChart = ({
+  items,
+  height = 320,
+}: {
+  items: TopicMasteryItem[];
+  height?: number;
+}) => {
   const withData = items.filter((t) => t.masteryPct != null);
   if (!withData.length) {
-    return <Empty description="Chưa có dữ liệu" image={Empty.PRESENTED_IMAGE_SIMPLE} />;
+    return (
+      <Empty
+        description="Chưa có dữ liệu"
+        image={Empty.PRESENTED_IMAGE_SIMPLE}
+      />
+    );
   }
 
   const rows = withData.map((t) => ({

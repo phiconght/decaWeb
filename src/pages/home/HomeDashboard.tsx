@@ -111,9 +111,9 @@ export default function HomeDashboard() {
       />
 
       <div
+        className="home-dashboard-grid"
         style={{
           display: 'grid',
-          gridTemplateColumns: '1fr 300px',
           gap: 22,
           alignItems: 'start',
         }}

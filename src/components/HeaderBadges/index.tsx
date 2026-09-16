@@ -16,8 +16,12 @@ export default function HeaderBadges() {
   const [msgCount, setMsgCount] = React.useState(0);
 
   React.useEffect(() => {
-    fetchNotificationUnreadCount().then(setNotifCount).catch(() => {});
-    fetchMessageUnreadCount().then(setMsgCount).catch(() => {});
+    fetchNotificationUnreadCount()
+      .then(setNotifCount)
+      .catch(() => {});
+    fetchMessageUnreadCount()
+      .then(setMsgCount)
+      .catch(() => {});
   }, [location.pathname]);
 
   return (

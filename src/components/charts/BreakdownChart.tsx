@@ -17,14 +17,23 @@ const BreakdownChart = ({
     const label = labelMap[b.key] ?? b.key;
     return [
       { bucket: label, result: RESULT_LABEL.correct, value: b.correctCount },
-      { bucket: label, result: RESULT_LABEL.incorrect, value: b.incorrectCount },
+      {
+        bucket: label,
+        result: RESULT_LABEL.incorrect,
+        value: b.incorrectCount,
+      },
       { bucket: label, result: RESULT_LABEL.ungraded, value: b.ungradedCount },
     ];
   });
 
   const total = rows.reduce((s, r) => s + r.value, 0);
   if (total === 0) {
-    return <Empty description="Chưa có dữ liệu" image={Empty.PRESENTED_IMAGE_SIMPLE} />;
+    return (
+      <Empty
+        description="Chưa có dữ liệu"
+        image={Empty.PRESENTED_IMAGE_SIMPLE}
+      />
+    );
   }
 
   return (
@@ -37,8 +46,16 @@ const BreakdownChart = ({
       stack
       scale={{
         color: {
-          domain: [RESULT_LABEL.correct, RESULT_LABEL.incorrect, RESULT_LABEL.ungraded],
-          range: [REPORT_COLORS.correct, REPORT_COLORS.incorrect, REPORT_COLORS.ungraded],
+          domain: [
+            RESULT_LABEL.correct,
+            RESULT_LABEL.incorrect,
+            RESULT_LABEL.ungraded,
+          ],
+          range: [
+            REPORT_COLORS.correct,
+            REPORT_COLORS.incorrect,
+            REPORT_COLORS.ungraded,
+          ],
         },
       }}
       axis={{ x: { title: false }, y: { title: false } }}

@@ -2,12 +2,15 @@ import { history } from '@umijs/max';
 import React from 'react';
 import AttendanceDonut from '@/components/charts/AttendanceDonut';
 import ScoreTrendChart from '@/components/charts/ScoreTrendChart';
+import PageTitle from '@/components/PageTitle';
 import AssignPracticeButton from '@/components/reports/AssignPracticeButton';
 import AttendanceMiniStats from '@/components/reports/AttendanceMiniStats';
 import BreakdownToggle from '@/components/reports/BreakdownToggle';
 import ChapterAnalysisCard from '@/components/reports/ChapterAnalysisCard';
-import { ExamCardsRow, SessionCardsRow } from '@/components/reports/HScrollCards';
-import PageTitle from '@/components/PageTitle';
+import {
+  ExamCardsRow,
+  SessionCardsRow,
+} from '@/components/reports/HScrollCards';
 import Panel from '@/components/ui/Panel';
 import { fetchClassOutline } from '@/services/classOutline';
 import {
@@ -19,7 +22,10 @@ import {
   fetchScoreTrend,
   fetchStudentAttendance,
 } from '@/services/report';
-import type { ClassOutlineResponse, OutlineTopicGroup } from '@/typings/classOutline';
+import type {
+  ClassOutlineResponse,
+  OutlineTopicGroup,
+} from '@/typings/classOutline';
 import type {
   BreakdownResponse,
   ChapterAnalysisResponse,
@@ -46,11 +52,19 @@ export default function TopicReportView({
   canAssign?: boolean;
 }) {
   const [outline, setOutline] = React.useState<ClassOutlineResponse>();
-  const [breakdown, setBreakdown] = React.useState<BreakdownResponse | undefined>();
-  const [attendance, setAttendance] = React.useState<StudentAttendanceReport | undefined>();
+  const [breakdown, setBreakdown] = React.useState<
+    BreakdownResponse | undefined
+  >();
+  const [attendance, setAttendance] = React.useState<
+    StudentAttendanceReport | undefined
+  >();
   const [trend, setTrend] = React.useState<ScoreTrendPoint[]>([]);
-  const [classExams, setClassExams] = React.useState<ClassExamAverageItem[]>([]);
-  const [analysis, setAnalysis] = React.useState<ChapterAnalysisResponse | undefined>();
+  const [classExams, setClassExams] = React.useState<ClassExamAverageItem[]>(
+    [],
+  );
+  const [analysis, setAnalysis] = React.useState<
+    ChapterAnalysisResponse | undefined
+  >();
   const [loading, setLoading] = React.useState(false);
 
   React.useEffect(() => {
@@ -63,9 +77,15 @@ export default function TopicReportView({
       studentId != null
         ? fetchStudentAttendance(studentId, classId, topicId)
         : fetchClassAttendance(classId, topicId),
-      studentId != null ? fetchScoreTrend(studentId, classId, topicId) : Promise.resolve([]),
-      studentId == null ? fetchClassExamAverages(classId, topicId) : Promise.resolve([]),
-      studentId != null ? fetchChapterAnalysis(studentId, classId, topicId) : Promise.resolve(undefined),
+      studentId != null
+        ? fetchScoreTrend(studentId, classId, topicId)
+        : Promise.resolve([]),
+      studentId == null
+        ? fetchClassExamAverages(classId, topicId)
+        : Promise.resolve([]),
+      studentId != null
+        ? fetchChapterAnalysis(studentId, classId, topicId)
+        : Promise.resolve(undefined),
     ])
       .then(([o, b, att, t, ce, an]) => {
         setOutline(o);
@@ -78,7 +98,9 @@ export default function TopicReportView({
       .finally(() => setLoading(false));
   }, [studentId, classId, topicId]);
 
-  const group: OutlineTopicGroup | undefined = outline?.groups.find((g) => g.topicId === topicId);
+  const group: OutlineTopicGroup | undefined = outline?.groups.find(
+    (g) => g.topicId === topicId,
+  );
   const topicName = group?.topicName ?? 'Chương';
 
   const sessionsHref = (sessionId: number) =>
@@ -90,10 +112,16 @@ export default function TopicReportView({
     <div style={{ maxWidth: 900, margin: '0 auto' }}>
       <PageTitle title={`Chương: ${topicName}`} />
       <div style={{ marginBottom: 22 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 800, margin: 0 }}>Chương: {topicName}</h1>
+        <h1 style={{ fontSize: 22, fontWeight: 800, margin: 0 }}>
+          Chương: {topicName}
+        </h1>
       </div>
       {loading && (
-        <div style={{ color: 'var(--ink-faint)', fontSize: 13, marginBottom: 12 }}>Đang tải…</div>
+        <div
+          style={{ color: 'var(--ink-faint)', fontSize: 13, marginBottom: 12 }}
+        >
+          Đang tải…
+        </div>
       )}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -115,7 +143,9 @@ export default function TopicReportView({
         ) : (
           <Panel title="Điểm TB lớp qua các đề trong chương">
             {classExams.length === 0 ? (
-              <div style={{ fontSize: 13, color: 'var(--ink-faint)' }}>Chưa có dữ liệu</div>
+              <div style={{ fontSize: 13, color: 'var(--ink-faint)' }}>
+                Chưa có dữ liệu
+              </div>
             ) : (
               classExams.map((e) => (
                 <div
@@ -160,7 +190,9 @@ export default function TopicReportView({
             <ExamCardsRow
               exams={group?.exams ?? []}
               onTap={(e) =>
-                history.push(`/reports/${studentId}/classes/${classId}/exams/${e.examId}`)
+                history.push(
+                  `/reports/${studentId}/classes/${classId}/exams/${e.examId}`,
+                )
               }
             />
           </Panel>

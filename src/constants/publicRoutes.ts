@@ -7,7 +7,7 @@
  * Xem KEHOACH_WEB_TrangChuCongKhai_HeroContent.md mục 6.1.
  */
 const PUBLIC_EXACT_PATHS = ['/home', '/catalog', '/posts'];
-const PUBLIC_PATH_PREFIXES = ['/posts/'];
+const PUBLIC_PATH_PREFIXES = ['/posts/', '/catalog/'];
 
 export function isPublicPath(pathname: string): boolean {
   if (PUBLIC_EXACT_PATHS.includes(pathname)) return true;

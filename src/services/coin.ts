@@ -1,13 +1,16 @@
 import { request } from '@umijs/max';
-import type { ApiResponse, FlatPageResponse } from '@/typings/common';
 import type { CoinBalanceResponse, CoinTransactionItem } from '@/typings/coin';
+import type { ApiResponse, FlatPageResponse } from '@/typings/common';
 
 /** GET /coins/my?studentId= — PARENT bắt buộc truyền, STUDENT tự scope nếu bỏ trống. */
 export async function fetchMyCoinBalance(studentId?: number) {
-  const res = await request<ApiResponse<CoinBalanceResponse>>('/api/v1/coins/my', {
-    method: 'GET',
-    params: { studentId },
-  });
+  const res = await request<ApiResponse<CoinBalanceResponse>>(
+    '/api/v1/coins/my',
+    {
+      method: 'GET',
+      params: { studentId },
+    },
+  );
   return res.data;
 }
 

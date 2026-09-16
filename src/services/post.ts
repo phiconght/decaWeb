@@ -11,6 +11,8 @@ export async function fetchPosts(current = 1, pageSize = 10) {
 }
 
 export async function fetchPostDetail(id: number) {
-  const res = await request<ApiResponse<PostDetail>>(`/api/v1/posts/${id}`, { method: 'GET' });
+  const res = await request<ApiResponse<PostDetail>>(`/api/v1/posts/${id}`, {
+    method: 'GET',
+  });
   return res.data;
 }

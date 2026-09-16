@@ -53,14 +53,19 @@ export default function PublicShell({
               key={item.path}
               to={item.path}
               className="public-nav-link"
-              data-active={pathname === item.path || pathname.startsWith(`${item.path}/`)}
+              data-active={
+                pathname === item.path || pathname.startsWith(`${item.path}/`)
+              }
             >
               {item.label}
             </Link>
           ))}
         </nav>
 
-        <PrimaryButton onClick={() => history.push('/login')} style={{ flexShrink: 0 }}>
+        <PrimaryButton
+          onClick={() => history.push('/login')}
+          style={{ flexShrink: 0 }}
+        >
           Đăng nhập
         </PrimaryButton>
       </header>

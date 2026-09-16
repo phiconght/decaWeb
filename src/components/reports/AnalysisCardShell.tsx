@@ -23,19 +23,34 @@ export default function AnalysisCardShell({
         marginBottom: 16,
       }}
     >
-      <div style={{ fontSize: 15, fontWeight: 800, marginBottom: 10 }}>{title}</div>
+      <div style={{ fontSize: 15, fontWeight: 800, marginBottom: 10 }}>
+        {title}
+      </div>
       {children}
     </div>
   );
 }
 
-export function InsightList({ items, heading }: { items: string[]; heading?: string }) {
+export function InsightList({
+  items,
+  heading,
+}: {
+  items: string[];
+  heading?: string;
+}) {
   if (!items.length) return null;
   return (
     <div style={{ marginTop: 12 }}>
-      {heading && <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 4 }}>{heading}</div>}
+      {heading && (
+        <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 4 }}>
+          {heading}
+        </div>
+      )}
       {items.map((s) => (
-        <div key={s} style={{ fontSize: 13, color: 'var(--ink-soft)', lineHeight: 1.6 }}>
+        <div
+          key={s}
+          style={{ fontSize: 13, color: 'var(--ink-soft)', lineHeight: 1.6 }}
+        >
           • {s}
         </div>
       ))}

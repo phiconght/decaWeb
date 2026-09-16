@@ -1,8 +1,14 @@
 import { history, useAccess, useModel } from '@umijs/max';
 import React from 'react';
-import { BookIcon } from '@/components/icons';
-import EnrollButton from '@/components/EnrollButton';
+import CourseCard from '@/components/CourseCard';
 import type { MarketingCategoryItem } from '@/typings/marketing';
+
+const GRADIENTS = [
+  'linear-gradient(150deg,#2E43E8,#5B6CFF)',
+  'linear-gradient(150deg,#F2A93B,#F5C877)',
+  'linear-gradient(150deg,#2FAE7A,#5FCB9F)',
+  'linear-gradient(150deg,#FF5D6C,#FF8A93)',
+];
 
 /**
  * 1 hàng danh mục nổi bật (banner cosmetic + thẻ lớp học THẬT, lọc theo
@@ -21,6 +27,7 @@ export default function CategoryRow({
   const access = useAccess();
   const { initialState } = useModel('@@initialState');
   const isGuest = !initialState?.currentUser;
+  const hotline = initialState?.appSettings?.supportHotline;
   if (category.classes.length === 0) return null;
 
   return (
@@ -42,7 +49,9 @@ export default function CategoryRow({
           }}
         />
         <h2 style={{ fontSize: 17, fontWeight: 800, margin: 0, flex: 1 }}>
-          {category.emoji ? `${category.emoji} ${category.title}` : category.title}
+          {category.emoji
+            ? `${category.emoji} ${category.title}`
+            : category.title}
         </h2>
         <button
           type="button"
@@ -60,7 +69,14 @@ export default function CategoryRow({
         </button>
       </div>
 
-      <div style={{ display: 'flex', gap: 14, overflowX: 'auto', paddingBottom: 6 }}>
+      <div
+        style={{
+          display: 'flex',
+          gap: 14,
+          overflowX: 'auto',
+          paddingBottom: 6,
+        }}
+      >
         <div
           style={{
             flexShrink: 0,
@@ -134,53 +150,12 @@ export default function CategoryRow({
           </button>
         </div>
 
-        {category.classes.map((item) => (
-          <div
-            key={item.id}
-            style={{
-              flexShrink: 0,
-              width: 180,
-              background: 'var(--card)',
-              border: '1px solid var(--line)',
-              borderRadius: 14,
-              padding: 12,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 6,
-              boxShadow: 'var(--shadow-card)',
-            }}
-          >
-            <div
-              style={{
-                width: 30,
-                height: 30,
-                borderRadius: 9,
-                background: `${category.accentColor}22`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <BookIcon width={15} height={15} style={{ color: category.accentColor }} />
-            </div>
-            <div
-              style={{
-                fontSize: 12.5,
-                fontWeight: 800,
-                lineHeight: 1.3,
-                minHeight: 32,
-              }}
-            >
-              {item.name}
-            </div>
-            <div style={{ fontSize: 10.5, color: 'var(--ink-soft)' }}>
-              {item.teacherNames[0] ?? 'Chưa phân công'}
-            </div>
-            {!item.coinPrice && (
-              <div style={{ fontSize: 10.5, color: 'var(--ink-soft)' }}>{item.gradeLevel}</div>
-            )}
-            <EnrollButton
+        {category.classes.map((item, i) => (
+          <div key={item.id} style={{ flexShrink: 0, width: 190 }}>
+            <CourseCard
               item={item}
+              gradient={GRADIENTS[i % GRADIENTS.length]}
+              hotline={hotline}
               isStudent={!!access.isStudent}
               isGuest={isGuest}
               onEnrolled={onEnrolled}

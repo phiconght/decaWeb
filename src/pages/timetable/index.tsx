@@ -12,6 +12,7 @@ import Chip from '@/components/ui/Chip';
 import EmptyState from '@/components/ui/EmptyState';
 import IconButton from '@/components/ui/IconButton';
 import { ListCard, ListRow } from '@/components/ui/ListCard';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import { fetchTimetable } from '@/services/timetable';
 import type { TimetableItem } from '@/typings/timetable';
 import { viDate } from '@/utils/date';
@@ -97,10 +98,14 @@ export default function TimetablePage() {
       ? 'PARENT'
       : 'STUDENT';
 
+  const isMobile = useIsMobile();
   const [weekStart, setWeekStart] = React.useState(() => mondayOf(dayjs()));
   const [items, setItems] = React.useState<TimetableItem[]>([]);
   const [loading, setLoading] = React.useState(false);
   const [childFilter, setChildFilter] = React.useState<string>('all');
+  const [selectedDay, setSelectedDay] = React.useState(() =>
+    dayjs().format('YYYY-MM-DD'),
+  );
 
   const load = React.useCallback(async () => {
     setLoading(true);
@@ -154,6 +159,17 @@ export default function TimetablePage() {
   const days = React.useMemo(
     () => Array.from({ length: 7 }, (_, i) => weekStart.add(i, 'day')),
     [weekStart],
+  );
+
+  React.useEffect(() => {
+    const dateStrs = days.map((d) => d.format('YYYY-MM-DD'));
+    const todayStr = dayjs().format('YYYY-MM-DD');
+    setSelectedDay(dateStrs.includes(todayStr) ? todayStr : dateStrs[0]);
+  }, [days]);
+
+  const dayItems = React.useMemo(
+    () => agenda.filter((item) => item.date === selectedDay),
+    [agenda, selectedDay],
   );
 
   const grid = React.useMemo(() => {
@@ -238,170 +254,279 @@ export default function TimetablePage() {
         </div>
       )}
 
-      <div
-        style={{
-          background: 'var(--card)',
-          border: '1px solid var(--line)',
-          borderRadius: 'var(--radius-lg)',
-          overflow: 'hidden',
-          boxShadow: 'var(--shadow-card)',
-          marginBottom: 22,
-        }}
-      >
-        {isEmpty && !loading ? (
-          <EmptyState
-            icon={<CalendarIcon width={60} height={60} strokeWidth={1.4} />}
-            title="Không có buổi học trong tuần này"
-          />
-        ) : (
-          <div style={{ overflowX: 'auto' }}>
-            <table
-              style={{
-                borderCollapse: 'collapse',
-                width: '100%',
-                minWidth: 7 * cellWidth + 64,
-              }}
-            >
-              <thead>
-                <tr>
-                  <th
-                    style={{
-                      width: 64,
-                      borderBottom: '1px solid var(--line)',
-                      borderRight: '1px solid var(--line-soft)',
-                      background: 'var(--card-warm)',
-                    }}
-                  />
-                  {days.map((d) => {
-                    const dateStr = d.format('YYYY-MM-DD');
-                    const isToday = dateStr === today;
-                    return (
+      {!isMobile && (
+        <>
+          <div
+            style={{
+              background: 'var(--card)',
+              border: '1px solid var(--line)',
+              borderRadius: 'var(--radius-lg)',
+              overflow: 'hidden',
+              boxShadow: 'var(--shadow-card)',
+              marginBottom: 22,
+            }}
+          >
+            {isEmpty && !loading ? (
+              <EmptyState
+                icon={<CalendarIcon width={60} height={60} strokeWidth={1.4} />}
+                title="Không có buổi học trong tuần này"
+              />
+            ) : (
+              <div style={{ overflowX: 'auto' }}>
+                <table
+                  style={{
+                    borderCollapse: 'collapse',
+                    width: '100%',
+                    minWidth: 7 * cellWidth + 64,
+                  }}
+                >
+                  <thead>
+                    <tr>
                       <th
-                        key={dateStr}
                         style={{
-                          width: cellWidth,
-                          padding: '14px 8px',
-                          textAlign: 'center',
+                          width: 64,
                           borderBottom: '1px solid var(--line)',
                           borderRight: '1px solid var(--line-soft)',
-                          background: isToday
-                            ? 'var(--cobalt-tint)'
-                            : 'var(--card-warm)',
+                          background: 'var(--card-warm)',
                         }}
-                      >
-                        <span
-                          style={{
-                            fontSize: 12.5,
-                            fontWeight: 700,
-                            textTransform: 'capitalize',
-                            color: isToday
-                              ? 'var(--cobalt-dark)'
-                              : 'var(--ink-soft)',
-                          }}
-                        >
-                          {viDate(d).format('dd')}
-                        </span>
-                        <span
-                          style={{
-                            display: 'block',
-                            fontWeight: 600,
-                            color: 'var(--ink-faint)',
-                            fontSize: 11,
-                            marginTop: 2,
-                          }}
-                        >
-                          {d.format('DD/MM')}
-                        </span>
-                      </th>
-                    );
-                  })}
-                </tr>
-              </thead>
-              <tbody>
-                {PERIODS.map((period) => (
-                  <tr key={period}>
-                    <td
-                      style={{
-                        padding: '7px',
-                        borderBottom: '1px solid var(--line-soft)',
-                        borderRight: '1px solid var(--line-soft)',
-                        background: 'var(--card-warm)',
-                        textAlign: 'left',
-                        paddingLeft: 14,
-                        fontSize: 12,
-                        fontWeight: 700,
-                        color: 'var(--ink-soft)',
-                        verticalAlign: 'top',
-                      }}
-                    >
-                      {period}
-                    </td>
-                    {days.map((d) => {
-                      const dateStr = d.format('YYYY-MM-DD');
-                      const isToday = dateStr === today;
-                      const cellItems = grid.get(period)?.get(dateStr) ?? [];
-                      return (
+                      />
+                      {days.map((d) => {
+                        const dateStr = d.format('YYYY-MM-DD');
+                        const isToday = dateStr === today;
+                        return (
+                          <th
+                            key={dateStr}
+                            style={{
+                              width: cellWidth,
+                              padding: '14px 8px',
+                              textAlign: 'center',
+                              borderBottom: '1px solid var(--line)',
+                              borderRight: '1px solid var(--line-soft)',
+                              background: isToday
+                                ? 'var(--cobalt-tint)'
+                                : 'var(--card-warm)',
+                            }}
+                          >
+                            <span
+                              style={{
+                                fontSize: 12.5,
+                                fontWeight: 700,
+                                textTransform: 'capitalize',
+                                color: isToday
+                                  ? 'var(--cobalt-dark)'
+                                  : 'var(--ink-soft)',
+                              }}
+                            >
+                              {viDate(d).format('dd')}
+                            </span>
+                            <span
+                              style={{
+                                display: 'block',
+                                fontWeight: 600,
+                                color: 'var(--ink-faint)',
+                                fontSize: 11,
+                                marginTop: 2,
+                              }}
+                            >
+                              {d.format('DD/MM')}
+                            </span>
+                          </th>
+                        );
+                      })}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {PERIODS.map((period) => (
+                      <tr key={period}>
                         <td
-                          key={dateStr}
                           style={{
-                            padding: 7,
+                            padding: '7px',
                             borderBottom: '1px solid var(--line-soft)',
                             borderRight: '1px solid var(--line-soft)',
+                            background: 'var(--card-warm)',
+                            textAlign: 'left',
+                            paddingLeft: 14,
+                            fontSize: 12,
+                            fontWeight: 700,
+                            color: 'var(--ink-soft)',
                             verticalAlign: 'top',
-                            height: 72,
-                            background: isToday ? '#fbfbf6' : undefined,
                           }}
                         >
-                          {cellItems.map((item) => (
-                            <SessionChip
-                              key={`${item.sessionId}-${item.studentId ?? ''}`}
-                              item={item}
-                              showWho={
-                                view === 'PARENT'
-                                  ? item.studentName
-                                  : item.teacherName
-                              }
-                            />
-                          ))}
+                          {period}
                         </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                        {days.map((d) => {
+                          const dateStr = d.format('YYYY-MM-DD');
+                          const isToday = dateStr === today;
+                          const cellItems =
+                            grid.get(period)?.get(dateStr) ?? [];
+                          return (
+                            <td
+                              key={dateStr}
+                              style={{
+                                padding: 7,
+                                borderBottom: '1px solid var(--line-soft)',
+                                borderRight: '1px solid var(--line-soft)',
+                                verticalAlign: 'top',
+                                height: 72,
+                                background: isToday ? '#fbfbf6' : undefined,
+                              }}
+                            >
+                              {cellItems.map((item) => (
+                                <SessionChip
+                                  key={`${item.sessionId}-${item.studentId ?? ''}`}
+                                  item={item}
+                                  showWho={
+                                    view === 'PARENT'
+                                      ? item.studentName
+                                      : item.teacherName
+                                  }
+                                />
+                              ))}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
-        )}
-      </div>
 
-      {!isEmpty && (
-        <ListCard
-          title="Danh sách buổi học trong tuần"
-          icon={<CalendarIcon width={16} height={16} />}
-        >
-          {agenda.map((item) => (
-            <ListRow
-              key={`${item.sessionId}-${item.studentId ?? ''}`}
-              icon={<CalendarIcon width={18} height={18} />}
-              title={`${viDate(item.date).format('dddd')}, ${item.date.split('-').reverse().join('/')} · ${item.startTime.slice(0, 5)}–${item.endTime.slice(0, 5)} · ${item.className}`}
-              subtitle={[
-                item.subjectName,
-                item.roomName && `Phòng ${item.roomName}`,
-                view === 'PARENT' ? item.studentName : item.teacherName,
-              ]
-                .filter(Boolean)
-                .join(' · ')}
-              right={
-                <Chip variant={STATUS_CHIP[item.status]?.variant ?? 'neutral'}>
-                  {getStatusMeta('session', item.status).label}
-                </Chip>
-              }
-              onClick={() =>
-                history.push(`/timetable/session/${item.sessionId}`, item)
-              }
+          {!isEmpty && (
+            <ListCard
+              title="Danh sách buổi học trong tuần"
+              icon={<CalendarIcon width={16} height={16} />}
+            >
+              {agenda.map((item) => (
+                <ListRow
+                  key={`${item.sessionId}-${item.studentId ?? ''}`}
+                  icon={<CalendarIcon width={18} height={18} />}
+                  title={`${viDate(item.date).format('dddd')}, ${item.date.split('-').reverse().join('/')} · ${item.startTime.slice(0, 5)}–${item.endTime.slice(0, 5)} · ${item.className}`}
+                  subtitle={[
+                    item.subjectName,
+                    item.roomName && `Phòng ${item.roomName}`,
+                    view === 'PARENT' ? item.studentName : item.teacherName,
+                  ]
+                    .filter(Boolean)
+                    .join(' · ')}
+                  right={
+                    <Chip
+                      variant={STATUS_CHIP[item.status]?.variant ?? 'neutral'}
+                    >
+                      {getStatusMeta('session', item.status).label}
+                    </Chip>
+                  }
+                  onClick={() =>
+                    history.push(`/timetable/session/${item.sessionId}`, item)
+                  }
+                />
+              ))}
+            </ListCard>
+          )}
+        </>
+      )}
+
+      {isMobile && (
+        <>
+          <div
+            style={{
+              display: 'flex',
+              gap: 8,
+              overflowX: 'auto',
+              paddingBottom: 4,
+              marginBottom: 16,
+            }}
+          >
+            {days.map((d) => {
+              const dateStr = d.format('YYYY-MM-DD');
+              const isSel = dateStr === selectedDay;
+              const isToday = dateStr === today;
+              return (
+                <button
+                  key={dateStr}
+                  type="button"
+                  onClick={() => setSelectedDay(dateStr)}
+                  style={{
+                    flex: '0 0 auto',
+                    minWidth: 60,
+                    padding: '7px 8px',
+                    borderRadius: 10,
+                    border: isSel
+                      ? '1px solid var(--cobalt)'
+                      : '1px solid var(--line)',
+                    background: isSel ? 'var(--cobalt-tint)' : 'var(--card)',
+                    cursor: 'pointer',
+                    textAlign: 'center',
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 700,
+                      textTransform: 'capitalize',
+                      color: isSel
+                        ? 'var(--cobalt-dark)'
+                        : isToday
+                          ? 'var(--cobalt)'
+                          : 'var(--ink-soft)',
+                    }}
+                  >
+                    {viDate(d).format('dd')}
+                  </div>
+                  <div
+                    className="mono"
+                    style={{
+                      fontSize: 12.5,
+                      fontWeight: 600,
+                      marginTop: 2,
+                      color: isSel ? 'var(--cobalt-dark)' : 'var(--ink)',
+                    }}
+                  >
+                    {d.format('DD/MM')}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          {dayItems.length === 0 && !loading ? (
+            <EmptyState
+              icon={<CalendarIcon width={60} height={60} strokeWidth={1.4} />}
+              title="Không có buổi học trong ngày này"
             />
-          ))}
-        </ListCard>
+          ) : (
+            <ListCard
+              title={`Buổi học · ${viDate(dayjs(selectedDay)).format('dddd, DD/MM')}`}
+              icon={<CalendarIcon width={16} height={16} />}
+            >
+              {dayItems.map((item) => (
+                <ListRow
+                  key={`${item.sessionId}-${item.studentId ?? ''}`}
+                  icon={<CalendarIcon width={18} height={18} />}
+                  title={`${item.startTime.slice(0, 5)}–${item.endTime.slice(0, 5)} · ${item.className}`}
+                  subtitle={[
+                    item.subjectName,
+                    item.roomName && `Phòng ${item.roomName}`,
+                    view === 'PARENT' ? item.studentName : item.teacherName,
+                  ]
+                    .filter(Boolean)
+                    .join(' · ')}
+                  right={
+                    <Chip
+                      variant={STATUS_CHIP[item.status]?.variant ?? 'neutral'}
+                    >
+                      {getStatusMeta('session', item.status).label}
+                    </Chip>
+                  }
+                  onClick={() =>
+                    history.push(`/timetable/session/${item.sessionId}`, item)
+                  }
+                />
+              ))}
+            </ListCard>
+          )}
+        </>
       )}
     </>
   );

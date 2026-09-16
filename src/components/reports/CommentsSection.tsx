@@ -1,4 +1,4 @@
-import { Button, Input, Switch, message } from 'antd';
+import { Button, Input, message, Switch } from 'antd';
 import React from 'react';
 import Chip from '@/components/ui/Chip';
 import { addComment, fetchComments } from '@/services/report';
@@ -43,7 +43,12 @@ export default function CommentsSection({
     if (!text) return;
     setSubmitting(true);
     try {
-      await addComment({ studentId, classId, content: text, visibleToStudent: visible });
+      await addComment({
+        studentId,
+        classId,
+        content: text,
+        visibleToStudent: visible,
+      });
       setContent('');
       setVisible(false);
       message.success('Đã thêm nhận xét');
@@ -58,7 +63,9 @@ export default function CommentsSection({
       {items == null ? (
         <div style={{ color: 'var(--ink-faint)', fontSize: 13 }}>Đang tải…</div>
       ) : items.length === 0 ? (
-        <div style={{ color: 'var(--ink-faint)', fontSize: 13 }}>Chưa có nhận xét.</div>
+        <div style={{ color: 'var(--ink-faint)', fontSize: 13 }}>
+          Chưa có nhận xét.
+        </div>
       ) : (
         items.map((c) => (
           <div
@@ -70,14 +77,26 @@ export default function CommentsSection({
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ fontWeight: 700, fontSize: 13.5 }}>{c.authorName}</span>
-              <Chip variant="neutral">{ROLE_LABEL[c.authorRole] ?? c.authorRole}</Chip>
+              <span style={{ fontWeight: 700, fontSize: 13.5 }}>
+                {c.authorName}
+              </span>
+              <Chip variant="neutral">
+                {ROLE_LABEL[c.authorRole] ?? c.authorRole}
+              </Chip>
               {!c.visibleToStudent && (
-                <span style={{ fontSize: 11, color: 'var(--ink-faint)' }}>(ẩn với HS)</span>
+                <span style={{ fontSize: 11, color: 'var(--ink-faint)' }}>
+                  (ẩn với HS)
+                </span>
               )}
             </div>
             {c.createdAt && (
-              <div style={{ fontSize: 11, color: 'var(--ink-faint)', marginTop: 2 }}>
+              <div
+                style={{
+                  fontSize: 11,
+                  color: 'var(--ink-faint)',
+                  marginTop: 2,
+                }}
+              >
                 {new Date(c.createdAt).toLocaleString('vi-VN')}
               </div>
             )}
@@ -95,12 +114,26 @@ export default function CommentsSection({
             maxLength={2000}
             placeholder="Nhập nhận xét cho học viên..."
           />
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginTop: 10 }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 16,
+              marginTop: 10,
+            }}
+          >
             <Button type="primary" loading={submitting} onClick={submit}>
               Gửi nhận xét
             </Button>
             {showVisibilityToggle && (
-              <span style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13 }}>
+              <span
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  fontSize: 13,
+                }}
+              >
                 <Switch size="small" checked={visible} onChange={setVisible} />
                 Cho học sinh xem
               </span>

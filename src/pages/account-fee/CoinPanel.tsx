@@ -1,5 +1,13 @@
 import { useAccess, useModel } from '@umijs/max';
-import { Drawer, InputNumber, message, QRCode, Segmented, Space, Typography } from 'antd';
+import {
+  Drawer,
+  InputNumber,
+  message,
+  QRCode,
+  Segmented,
+  Space,
+  Typography,
+} from 'antd';
 import React from 'react';
 import { CoinIcon } from '@/components/icons';
 import { OutlineButton, PrimaryButton } from '@/components/ui/Buttons';
@@ -27,8 +35,12 @@ export default function CoinPanel() {
   const [studentId, setStudentId] = React.useState<number | undefined>(
     access.isStudent ? Number(initialState?.currentUser?.userid) : undefined,
   );
-  const [balance, setBalance] = React.useState<CoinBalanceResponse | undefined>();
-  const [transactions, setTransactions] = React.useState<CoinTransactionItem[]>([]);
+  const [balance, setBalance] = React.useState<
+    CoinBalanceResponse | undefined
+  >();
+  const [transactions, setTransactions] = React.useState<CoinTransactionItem[]>(
+    [],
+  );
   const [topups, setTopups] = React.useState<CoinTopupResponse[]>([]);
   const [loading, setLoading] = React.useState(false);
 
@@ -132,12 +144,24 @@ export default function CoinPanel() {
           <CoinIcon width={28} height={28} />
         </div>
         <div>
-          <div style={{ fontSize: 12.5, color: 'var(--ink-soft)', marginBottom: 4 }}>
+          <div
+            style={{
+              fontSize: 12.5,
+              color: 'var(--ink-soft)',
+              marginBottom: 4,
+            }}
+          >
             Số dư
           </div>
           <div style={{ fontSize: 32, fontWeight: 700 }}>
             {loading ? '…' : (balance?.balance ?? 0)}{' '}
-            <span style={{ fontSize: 16, fontWeight: 600, color: 'var(--ink-soft)' }}>
+            <span
+              style={{
+                fontSize: 16,
+                fontWeight: 600,
+                color: 'var(--ink-soft)',
+              }}
+            >
               xu
             </span>
           </div>
@@ -145,10 +169,14 @@ export default function CoinPanel() {
       </Panel>
 
       <Panel style={{ marginBottom: 20 }}>
-        <div style={{ fontWeight: 700, marginBottom: 10 }}>Nạp Xu bằng chuyển khoản</div>
-        <div style={{ fontSize: 12.5, color: 'var(--ink-soft)', marginBottom: 12 }}>
-          Tỷ lệ 1.000đ = 1 Xu. Tối thiểu 10.000đ. Xu được cộng sau khi trung tâm đối
-          soát và xác nhận đã nhận chuyển khoản.
+        <div style={{ fontWeight: 700, marginBottom: 10 }}>
+          Nạp Xu bằng chuyển khoản
+        </div>
+        <div
+          style={{ fontSize: 12.5, color: 'var(--ink-soft)', marginBottom: 12 }}
+        >
+          Tỷ lệ 1.000đ = 1 Xu. Tối thiểu 10.000đ. Xu được cộng sau khi trung tâm
+          đối soát và xác nhận đã nhận chuyển khoản.
         </div>
         <Space wrap style={{ marginBottom: 10 }}>
           {TOPUP_PRESETS.map((p) => (
@@ -165,7 +193,9 @@ export default function CoinPanel() {
             step={10000}
             style={{ width: 180 }}
             placeholder="Số tiền (VND)"
-            formatter={(v) => (v ? `${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '')}
+            formatter={(v) =>
+              v ? `${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : ''
+            }
             parser={(v) => Number((v ?? '').replace(/\./g, ''))}
           />
           <PrimaryButton onClick={handleTopup} disabled={submitting}>
@@ -175,7 +205,14 @@ export default function CoinPanel() {
 
         {pendingTopups.length > 0 && (
           <div style={{ marginTop: 16 }}>
-            <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--ink-soft)', marginBottom: 8 }}>
+            <div
+              style={{
+                fontSize: 12.5,
+                fontWeight: 700,
+                color: 'var(--ink-soft)',
+                marginBottom: 8,
+              }}
+            >
               Yêu cầu đang chờ đối soát
             </div>
             <ListCard>
@@ -202,14 +239,19 @@ export default function CoinPanel() {
         )}
       </Panel>
 
-      <ListCard title="Lịch sử biến động Xu" icon={<CoinIcon width={16} height={16} />}>
+      <ListCard
+        title="Lịch sử biến động Xu"
+        icon={<CoinIcon width={16} height={16} />}
+      >
         <DataTable
           columns={[
             {
               key: 'date',
               title: 'Ngày',
               width: 140,
-              render: (r) => <span className="mono">{r.createdAt.slice(0, 10)}</span>,
+              render: (r) => (
+                <span className="mono">{r.createdAt.slice(0, 10)}</span>
+              ),
             },
             {
               key: 'amount',
@@ -251,17 +293,22 @@ export default function CoinPanel() {
           <Space direction="vertical" align="center" style={{ width: '100%' }}>
             <QRCode value={qrData.qrPayload} size={220} />
             <Typography.Text strong>
-              {qrData.amountVnd.toLocaleString('vi-VN')}đ · {qrData.coinAmount.toLocaleString('vi-VN')} Xu
+              {qrData.amountVnd.toLocaleString('vi-VN')}đ ·{' '}
+              {qrData.coinAmount.toLocaleString('vi-VN')} Xu
             </Typography.Text>
             <Space>
               <Typography.Text>
                 {qrData.bankName} · {qrData.accountNumber}
               </Typography.Text>
-              <OutlineButton onClick={() => copyText(qrData.accountNumber ?? '')}>
+              <OutlineButton
+                onClick={() => copyText(qrData.accountNumber ?? '')}
+              >
                 Sao chép
               </OutlineButton>
             </Space>
-            <Typography.Text type="secondary">{qrData.accountName}</Typography.Text>
+            <Typography.Text type="secondary">
+              {qrData.accountName}
+            </Typography.Text>
             <Space>
               <Typography.Text code>{qrData.paymentCode}</Typography.Text>
               <OutlineButton onClick={() => copyText(qrData.paymentCode)}>

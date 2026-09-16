@@ -13,9 +13,19 @@ function Mini({ label, value }: { label: string; value: string }) {
 }
 
 /** Hàng 3 mini-stat chuyên cần — mirror MOBILE `_Mini` row (Đi đủ/Đúng giờ/Số buổi). */
-export default function AttendanceMiniStats({ summary }: { summary: AttendanceSummary }) {
+export default function AttendanceMiniStats({
+  summary,
+}: {
+  summary: AttendanceSummary;
+}) {
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: 12 }}>
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'space-around',
+        marginBottom: 12,
+      }}
+    >
       <Mini label="Đi đủ" value={pct(summary.attendanceRate)} />
       <Mini label="Đúng giờ" value={pct(summary.onTimeRate)} />
       <Mini label="Số buổi" value={`${summary.totalSessions}`} />

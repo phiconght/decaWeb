@@ -3,7 +3,11 @@ import type { ExamAnalysisResponse } from '@/typings/report';
 import AnalysisCardShell, { fmt, InsightList } from './AnalysisCardShell';
 
 /** Bảng "Phân tích tự động" cho 1 BÀI THI — mirror `exam_analysis_card.dart`. */
-export default function ExamAnalysisCard({ analysis }: { analysis?: ExamAnalysisResponse }) {
+export default function ExamAnalysisCard({
+  analysis,
+}: {
+  analysis?: ExamAnalysisResponse;
+}) {
   if (!analysis) return null;
   const a = analysis;
   return (

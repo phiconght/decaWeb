@@ -5,7 +5,11 @@ import { DIFFICULTY_LABEL, TYPE_LABEL } from '@/components/charts/colors';
 import type { BreakdownResponse } from '@/typings/report';
 
 /** Segmented Độ khó/Loại câu + BreakdownChart — dùng lại ở 4 trang báo cáo. */
-export default function BreakdownToggle({ breakdown }: { breakdown?: BreakdownResponse }) {
+export default function BreakdownToggle({
+  breakdown,
+}: {
+  breakdown?: BreakdownResponse;
+}) {
   const [byType, setByType] = React.useState(false);
   return (
     <div>

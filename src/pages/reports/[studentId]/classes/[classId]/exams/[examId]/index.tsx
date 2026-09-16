@@ -1,10 +1,10 @@
 import { useAccess, useParams } from '@umijs/max';
-import { Button, Modal, Select, Tooltip, message } from 'antd';
+import { Button, Modal, message, Select, Tooltip } from 'antd';
 import React from 'react';
 import BreakdownChart from '@/components/charts/BreakdownChart';
 import { DIFFICULTY_LABEL, TYPE_LABEL } from '@/components/charts/colors';
-import ExamAnalysisCard from '@/components/reports/ExamAnalysisCard';
 import PageTitle from '@/components/PageTitle';
+import ExamAnalysisCard from '@/components/reports/ExamAnalysisCard';
 import Chip from '@/components/ui/Chip';
 import InfoGrid from '@/components/ui/InfoGrid';
 import Panel from '@/components/ui/Panel';
@@ -40,7 +40,9 @@ export default function ExamReportPage() {
   const canAssign = access.isParent;
 
   const [data, setData] = React.useState<ExamReportDetail | undefined>();
-  const [analysis, setAnalysis] = React.useState<ExamAnalysisResponse | undefined>();
+  const [analysis, setAnalysis] = React.useState<
+    ExamAnalysisResponse | undefined
+  >();
   const [topics, setTopics] = React.useState<TopicMasteryItem[]>([]);
   const [assignTopicId, setAssignTopicId] = React.useState<number>();
   const [initialized, setInitialized] = React.useState(false);
@@ -67,7 +69,9 @@ export default function ExamReportPage() {
     return (
       <div style={{ maxWidth: 900, margin: '0 auto' }}>
         {loading ? (
-          <div style={{ color: 'var(--ink-faint)', fontSize: 13 }}>Đang tải…</div>
+          <div style={{ color: 'var(--ink-faint)', fontSize: 13 }}>
+            Đang tải…
+          </div>
         ) : (
           <div style={{ color: 'var(--ink-faint)', fontSize: 13 }}>
             Không tải được chi tiết bài thi
@@ -89,7 +93,10 @@ export default function ExamReportPage() {
   };
   addTopic(data.topicId, data.topicName);
   for (const t of topics) addTopic(t.topicId, t.topicName);
-  const currentAssignValue = assignTopicId != null && seen.has(assignTopicId) ? assignTopicId : WHOLE_COURSE;
+  const currentAssignValue =
+    assignTopicId != null && seen.has(assignTopicId)
+      ? assignTopicId
+      : WHOLE_COURSE;
 
   const showResult = (r: PracticeAssignmentResponse) => {
     Modal.success({
@@ -99,13 +106,15 @@ export default function ExamReportPage() {
           <div style={{ fontWeight: 700 }}>{r.examName}</div>
           <div>Chuyên đề: {r.topicName ?? '—'}</div>
           <div>
-            Số câu: {r.numQuestions} — Dễ {r.byDifficulty.easy}/TB {r.byDifficulty.medium}/Khó{' '}
-            {r.byDifficulty.hard}
+            Số câu: {r.numQuestions} — Dễ {r.byDifficulty.easy}/TB{' '}
+            {r.byDifficulty.medium}/Khó {r.byDifficulty.hard}
           </div>
           <div>
             Dạng: TN {r.byType.multipleChoice}/ĐS {r.byType.trueFalse}
           </div>
-          {r.deadline && <div>Hạn: {new Date(r.deadline).toLocaleDateString('vi-VN')}</div>}
+          {r.deadline && (
+            <div>Hạn: {new Date(r.deadline).toLocaleDateString('vi-VN')}</div>
+          )}
         </div>
       ),
     });
@@ -113,7 +122,8 @@ export default function ExamReportPage() {
 
   const assign = () => {
     if (assignTopicId == null) return;
-    const topicName = topicOptions.find((t) => t.value === assignTopicId)?.label ?? 'Chương';
+    const topicName =
+      topicOptions.find((t) => t.value === assignTopicId)?.label ?? 'Chương';
     Modal.confirm({
       title: 'Giao bài cho con',
       content: `Hệ thống chọn 10 bài chương "${topicName}" — độ khó/dạng bài nghiêng về phần con đang yếu (số liệu đang hiển thị).`,
@@ -122,7 +132,10 @@ export default function ExamReportPage() {
       onOk: async () => {
         setAssigning(true);
         try {
-          const r = await assignPractice(sid, cid, { examId: eid, topicId: assignTopicId });
+          const r = await assignPractice(sid, cid, {
+            examId: eid,
+            topicId: assignTopicId,
+          });
           showResult(r);
         } catch (e) {
           message.error(e instanceof Error ? e.message : 'Không giao được bài');
@@ -137,17 +150,23 @@ export default function ExamReportPage() {
     <div style={{ maxWidth: 900, margin: '0 auto' }}>
       <PageTitle title={data.examName} />
       <div style={{ marginBottom: 22 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 800, margin: 0 }}>{data.examName}</h1>
+        <h1 style={{ fontSize: 22, fontWeight: 800, margin: 0 }}>
+          {data.examName}
+        </h1>
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         {(data.topicName || data.sessionTitle) && (
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            {data.topicName && <Chip variant="cobalt">Chương: {data.topicName}</Chip>}
+            {data.topicName && (
+              <Chip variant="cobalt">Chương: {data.topicName}</Chip>
+            )}
             {data.sessionTitle && (
               <Chip variant="neutral">
                 Buổi: {data.sessionTitle}
-                {data.sessionDate ? ` (${new Date(data.sessionDate).toLocaleDateString('vi-VN')})` : ''}
+                {data.sessionDate
+                  ? ` (${new Date(data.sessionDate).toLocaleDateString('vi-VN')})`
+                  : ''}
               </Chip>
             )}
           </div>
@@ -163,7 +182,10 @@ export default function ExamReportPage() {
               { k: 'TB lớp', v: data.classAverage?.toFixed(2) ?? '—' },
               {
                 k: 'Xếp hạng',
-                v: data.rank != null ? `${data.rank}/${data.submittedCount ?? '—'}` : '—',
+                v:
+                  data.rank != null
+                    ? `${data.rank}/${data.submittedCount ?? '—'}`
+                    : '—',
               },
             ]}
           />
@@ -174,7 +196,9 @@ export default function ExamReportPage() {
             <Select
               style={{ width: '100%' }}
               value={currentAssignValue}
-              onChange={(v) => setAssignTopicId(v === WHOLE_COURSE ? undefined : v)}
+              onChange={(v) =>
+                setAssignTopicId(v === WHOLE_COURSE ? undefined : v)
+              }
               options={topicOptions}
             />
             <div style={{ marginTop: 12 }}>
@@ -192,10 +216,16 @@ export default function ExamReportPage() {
         )}
 
         <Panel title="Năng lực bài thi (chỉ đề này) — độ khó">
-          <BreakdownChart buckets={data.breakdown.byDifficulty} labelMap={DIFFICULTY_LABEL} />
+          <BreakdownChart
+            buckets={data.breakdown.byDifficulty}
+            labelMap={DIFFICULTY_LABEL}
+          />
         </Panel>
         <Panel title="Năng lực bài thi (chỉ đề này) — loại câu">
-          <BreakdownChart buckets={data.breakdown.byType} labelMap={TYPE_LABEL} />
+          <BreakdownChart
+            buckets={data.breakdown.byType}
+            labelMap={TYPE_LABEL}
+          />
         </Panel>
       </div>
     </div>

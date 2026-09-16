@@ -10,12 +10,12 @@ export default function InfoGrid({
 }) {
   return (
     <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: `repeat(${columns}, 1fr)`,
-        gap: '18px 40px',
-        marginBottom: 20,
-      }}
+      className="info-grid"
+      style={
+        {
+          '--info-grid-cols': columns,
+        } as React.CSSProperties
+      }
     >
       {items.map((item) => (
         <div key={item.k}>

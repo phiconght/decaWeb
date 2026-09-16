@@ -6,9 +6,9 @@ import AttendanceDonut from '@/components/charts/AttendanceDonut';
 import BreakdownChart from '@/components/charts/BreakdownChart';
 import { DIFFICULTY_LABEL, REPORT_COLORS } from '@/components/charts/colors';
 import TopicMasteryChart from '@/components/charts/TopicMasteryChart';
+import PageTitle from '@/components/PageTitle';
 import CourseScoreSpectrum from '@/components/reports/CourseScoreSpectrum';
 import ScoreDistributionChart from '@/components/reports/ScoreDistributionChart';
-import PageTitle from '@/components/PageTitle';
 import EmptyState from '@/components/ui/EmptyState';
 import { ListCard, ListRow } from '@/components/ui/ListCard';
 import Panel from '@/components/ui/Panel';
@@ -39,15 +39,23 @@ export default function TeacherClassReportPage() {
   const cid = Number(classId);
 
   const [averages, setAverages] = React.useState<ClassExamAverageItem[]>([]);
-  const [breakdown, setBreakdown] = React.useState<BreakdownResponse | undefined>();
+  const [breakdown, setBreakdown] = React.useState<
+    BreakdownResponse | undefined
+  >();
   const [mastery, setMastery] = React.useState<TopicMasteryItem[]>([]);
-  const [attendance, setAttendance] = React.useState<ClassAttendanceReport | undefined>();
+  const [attendance, setAttendance] = React.useState<
+    ClassAttendanceReport | undefined
+  >();
   const [students, setStudents] = React.useState<ClassStudentAverageItem[]>([]);
-  const [spectrum, setSpectrum] = React.useState<ExamScoreDistribution | undefined>();
+  const [spectrum, setSpectrum] = React.useState<
+    ExamScoreDistribution | undefined
+  >();
   const [loading, setLoading] = React.useState(false);
 
   const [distExamId, setDistExamId] = React.useState<number>();
-  const [distribution, setDistribution] = React.useState<ExamScoreDistribution | undefined>();
+  const [distribution, setDistribution] = React.useState<
+    ExamScoreDistribution | undefined
+  >();
 
   React.useEffect(() => {
     setLoading(true);
@@ -80,20 +88,27 @@ export default function TeacherClassReportPage() {
     .filter((a) => a.avgScore != null && a.maxScore)
     .map((a) => ({
       exam: a.examName,
-      value: Math.round(((a.avgScore as number) / (a.maxScore as number)) * 1000) / 10,
+      value:
+        Math.round(((a.avgScore as number) / (a.maxScore as number)) * 1000) /
+        10,
     }));
 
   return (
     <div style={{ maxWidth: 900, margin: '0 auto' }}>
       <PageTitle title="Báo cáo cả lớp" />
       <div style={{ marginBottom: 22 }}>
-        <h1 style={{ fontSize: 26, fontWeight: 800, margin: 0 }}>Báo cáo cả lớp</h1>
+        <h1 style={{ fontSize: 26, fontWeight: 800, margin: 0 }}>
+          Báo cáo cả lớp
+        </h1>
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <Panel title="Điểm TB lớp qua các đề">
           {avgRows.length === 0 ? (
-            <Empty description="Chưa có dữ liệu" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+            <Empty
+              description="Chưa có dữ liệu"
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+            />
           ) : (
             <Line
               height={220}
@@ -110,7 +125,10 @@ export default function TeacherClassReportPage() {
         </Panel>
 
         <Panel title="Đúng/sai cả lớp theo độ khó">
-          <BreakdownChart buckets={breakdown?.byDifficulty ?? []} labelMap={DIFFICULTY_LABEL} />
+          <BreakdownChart
+            buckets={breakdown?.byDifficulty ?? []}
+            labelMap={DIFFICULTY_LABEL}
+          />
         </Panel>
 
         <Panel title="Phổ điểm toàn khóa (điểm TB HV)">
@@ -123,7 +141,10 @@ export default function TeacherClassReportPage() {
               style={{ width: '100%', marginBottom: 12 }}
               value={distExamId}
               onChange={setDistExamId}
-              options={averages.map((a) => ({ value: a.examId, label: a.examName }))}
+              options={averages.map((a) => ({
+                value: a.examId,
+                label: a.examName,
+              }))}
             />
           )}
           <ScoreDistributionChart data={distribution} />
@@ -137,7 +158,9 @@ export default function TeacherClassReportPage() {
               .map((t) => (
                 <div
                   key={t.topicId}
-                  onClick={() => history.push(`/reports/classes/${cid}/topics/${t.topicId}`)}
+                  onClick={() =>
+                    history.push(`/reports/classes/${cid}/topics/${t.topicId}`)
+                  }
                   style={{
                     padding: '10px 4px',
                     borderBottom: '1px solid var(--line-soft)',
@@ -169,9 +192,13 @@ export default function TeacherClassReportPage() {
                 subtitle={`Điểm TB: ${s.avgScore?.toFixed(2) ?? '—'} · Nộp: ${
                   s.submittedCount
                 } · Chuyên cần: ${
-                  s.attendanceRate != null ? `${Math.round(s.attendanceRate * 100)}%` : '—'
+                  s.attendanceRate != null
+                    ? `${Math.round(s.attendanceRate * 100)}%`
+                    : '—'
                 }`}
-                onClick={() => history.push(`/reports/${s.studentId}/classes/${cid}`)}
+                onClick={() =>
+                  history.push(`/reports/${s.studentId}/classes/${cid}`)
+                }
               />
             ))
           )}

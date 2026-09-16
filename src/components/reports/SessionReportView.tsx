@@ -1,9 +1,9 @@
 import { history } from '@umijs/max';
 import React from 'react';
+import PageTitle from '@/components/PageTitle';
 import AssignPracticeButton from '@/components/reports/AssignPracticeButton';
 import BreakdownToggle from '@/components/reports/BreakdownToggle';
 import SessionAnalysisCard from '@/components/reports/SessionAnalysisCard';
-import PageTitle from '@/components/PageTitle';
 import Panel from '@/components/ui/Panel';
 import { fetchClassOutline } from '@/services/classOutline';
 import {
@@ -39,10 +39,16 @@ export default function SessionReportView({
   canAssign?: boolean;
 }) {
   const [outline, setOutline] = React.useState<ClassOutlineResponse>();
-  const [breakdown, setBreakdown] = React.useState<BreakdownResponse | undefined>();
+  const [breakdown, setBreakdown] = React.useState<
+    BreakdownResponse | undefined
+  >();
   const [exams, setExams] = React.useState<RecentExamItem[]>([]);
-  const [classExams, setClassExams] = React.useState<ClassExamAverageItem[]>([]);
-  const [analysis, setAnalysis] = React.useState<SessionAnalysisResponse | undefined>();
+  const [classExams, setClassExams] = React.useState<ClassExamAverageItem[]>(
+    [],
+  );
+  const [analysis, setAnalysis] = React.useState<
+    SessionAnalysisResponse | undefined
+  >();
   const [loading, setLoading] = React.useState(false);
 
   React.useEffect(() => {
@@ -52,8 +58,12 @@ export default function SessionReportView({
       studentId != null
         ? fetchSessionBreakdowns(studentId, classId, sessionId)
         : fetchClassSessionBreakdowns(classId, sessionId),
-      studentId != null ? fetchSessionExams(studentId, classId, sessionId) : Promise.resolve([]),
-      studentId == null ? fetchClassSessionExams(classId, sessionId) : Promise.resolve([]),
+      studentId != null
+        ? fetchSessionExams(studentId, classId, sessionId)
+        : Promise.resolve([]),
+      studentId == null
+        ? fetchClassSessionExams(classId, sessionId)
+        : Promise.resolve([]),
       studentId != null
         ? fetchSessionAnalysis(studentId, classId, sessionId)
         : Promise.resolve(undefined),
@@ -68,17 +78,25 @@ export default function SessionReportView({
       .finally(() => setLoading(false));
   }, [studentId, classId, sessionId]);
 
-  const group = outline?.groups.find((g) => g.sessions.some((s) => s.sessionId === sessionId));
+  const group = outline?.groups.find((g) =>
+    g.sessions.some((s) => s.sessionId === sessionId),
+  );
   const session = group?.sessions.find((s) => s.sessionId === sessionId);
 
   return (
     <div style={{ maxWidth: 900, margin: '0 auto' }}>
       <PageTitle title="Chi tiết buổi học" />
       <div style={{ marginBottom: 22 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 800, margin: 0 }}>Chi tiết buổi học</h1>
+        <h1 style={{ fontSize: 22, fontWeight: 800, margin: 0 }}>
+          Chi tiết buổi học
+        </h1>
       </div>
       {loading && (
-        <div style={{ color: 'var(--ink-faint)', fontSize: 13, marginBottom: 12 }}>Đang tải…</div>
+        <div
+          style={{ color: 'var(--ink-faint)', fontSize: 13, marginBottom: 12 }}
+        >
+          Đang tải…
+        </div>
       )}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -100,16 +118,24 @@ export default function SessionReportView({
         {studentId != null && <SessionAnalysisCard analysis={analysis} />}
 
         <Panel
-          title={session ? `Buổi ${session.ordinal ?? '—'}: ${session.title ?? 'Chưa đặt tên'}` : 'Buổi học'}
+          title={
+            session
+              ? `Buổi ${session.ordinal ?? '—'}: ${session.title ?? 'Chưa đặt tên'}`
+              : 'Buổi học'
+          }
         >
           {session ? (
             <div style={{ fontSize: 13.5, lineHeight: 1.8 }}>
               <div>
                 {new Date(session.date).toLocaleDateString('vi-VN')}
-                {session.startTime ? ` ${session.startTime} - ${session.endTime ?? ''}` : ''}
+                {session.startTime
+                  ? ` ${session.startTime} - ${session.endTime ?? ''}`
+                  : ''}
               </div>
               {session.roomName && <div>Phòng: {session.roomName}</div>}
-              {session.teacherName && <div>Giáo viên: {session.teacherName}</div>}
+              {session.teacherName && (
+                <div>Giáo viên: {session.teacherName}</div>
+              )}
               {studentId != null && session.attendanceStatus && (
                 <div>
                   Điểm danh: {session.attendanceStatus}
@@ -127,13 +153,17 @@ export default function SessionReportView({
         <Panel title="Báo cáo theo bài thi trong buổi">
           {studentId != null ? (
             exams.length === 0 ? (
-              <div style={{ fontSize: 13, color: 'var(--ink-faint)' }}>Chưa có bài đã nộp</div>
+              <div style={{ fontSize: 13, color: 'var(--ink-faint)' }}>
+                Chưa có bài đã nộp
+              </div>
             ) : (
               exams.map((e) => (
                 <div
                   key={e.examStudentId}
                   onClick={() =>
-                    history.push(`/reports/${studentId}/classes/${classId}/exams/${e.examId}`)
+                    history.push(
+                      `/reports/${studentId}/classes/${classId}/exams/${e.examId}`,
+                    )
                   }
                   style={{
                     display: 'flex',
@@ -149,12 +179,19 @@ export default function SessionReportView({
               ))
             )
           ) : classExams.length === 0 ? (
-            <div style={{ fontSize: 13, color: 'var(--ink-faint)' }}>Chưa có dữ liệu</div>
+            <div style={{ fontSize: 13, color: 'var(--ink-faint)' }}>
+              Chưa có dữ liệu
+            </div>
           ) : (
             classExams.map((e) => (
               <div
                 key={e.examId}
-                style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: 13.5 }}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  padding: '6px 0',
+                  fontSize: 13.5,
+                }}
               >
                 <span>{e.examName}</span>
                 <span>{e.avgScore?.toFixed(2) ?? '—'}</span>

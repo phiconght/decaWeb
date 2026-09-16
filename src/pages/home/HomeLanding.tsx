@@ -1,15 +1,18 @@
 import { history } from '@umijs/max';
 import dayjs from 'dayjs';
 import React from 'react';
-import { PrimaryButton } from '@/components/ui/Buttons';
-import EmptyState from '@/components/ui/EmptyState';
-import Chip from '@/components/ui/Chip';
 import { PostIcon } from '@/components/icons';
 import CategoryRow from '@/components/marketing/CategoryRow';
 import Testimonials from '@/components/marketing/Testimonials';
+import { PrimaryButton } from '@/components/ui/Buttons';
+import Chip from '@/components/ui/Chip';
+import EmptyState from '@/components/ui/EmptyState';
 import { fetchHomeMarketing } from '@/services/marketing';
 import { fetchPosts } from '@/services/post';
-import type { HomeHeroResponse, HomeMarketingResponse } from '@/typings/marketing';
+import type {
+  HomeHeroResponse,
+  HomeMarketingResponse,
+} from '@/typings/marketing';
 import type { PostItem } from '@/typings/post';
 
 const FEED_GRADIENTS = [
@@ -69,7 +72,12 @@ function PostCard({
         }}
       >
         {!post.coverImageUrl && (
-          <PostIcon width={36} height={36} stroke="#fff" style={{ opacity: 0.9 }} />
+          <PostIcon
+            width={36}
+            height={36}
+            stroke="#fff"
+            style={{ opacity: 0.9 }}
+          />
         )}
         {post.pinned && (
           <span style={{ position: 'absolute', top: 10, left: 10 }}>
@@ -77,7 +85,14 @@ function PostCard({
           </span>
         )}
       </div>
-      <div style={{ padding: '14px 16px 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div
+        style={{
+          padding: '14px 16px 16px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 8,
+        }}
+      >
         <div
           style={{
             fontSize: 15,
@@ -156,11 +171,25 @@ function Hero({ hero }: { hero: HomeHeroResponse }) {
           {hero.badgeText}
         </div>
       )}
-      <h1 style={{ fontSize: 34, fontWeight: 800, margin: '0 0 12px', maxWidth: 620 }}>
+      <h1
+        style={{
+          fontSize: 34,
+          fontWeight: 800,
+          margin: '0 0 12px',
+          maxWidth: 620,
+        }}
+      >
         {hero.title}
       </h1>
       {hero.subtitle && (
-        <p style={{ fontSize: 15, opacity: 0.92, maxWidth: 520, margin: '0 0 26px' }}>
+        <p
+          style={{
+            fontSize: 15,
+            opacity: 0.92,
+            maxWidth: 520,
+            margin: '0 0 26px',
+          }}
+        >
           {hero.subtitle}
         </p>
       )}
@@ -231,7 +260,14 @@ export default function HomeLanding() {
       {/* Bài viết mới nhất — đẩy lên đầu (ngay sau Hero), khung ảnh nổi bật
           thay vì icon nhỏ (phản hồi người dùng 13/09/2026). */}
       <div style={{ marginBottom: 28 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+            marginBottom: 14,
+          }}
+        >
           <span
             style={{
               width: 4,
@@ -260,7 +296,9 @@ export default function HomeLanding() {
         </div>
 
         {loading ? (
-          <div style={{ color: 'var(--ink-faint)', fontSize: 13 }}>Đang tải…</div>
+          <div style={{ color: 'var(--ink-faint)', fontSize: 13 }}>
+            Đang tải…
+          </div>
         ) : posts.length === 0 ? (
           <EmptyState title="Chưa có bài viết" />
         ) : (

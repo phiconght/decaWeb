@@ -62,10 +62,17 @@ export default function ReportsPage() {
         }
       })
       .finally(() => setLoading(false));
-  }, [access.isTeacher, access.isParent, selectedChild, initialState?.currentUser?.userid]);
+  }, [
+    access.isTeacher,
+    access.isParent,
+    selectedChild,
+    initialState?.currentUser?.userid,
+  ]);
 
   // GV: danh sách lớp mình dạy — mirror MOBILE `_TeacherClasses` (ReportsPage).
-  const [teacherClasses, setTeacherClasses] = React.useState<StudentClassOption[]>([]);
+  const [teacherClasses, setTeacherClasses] = React.useState<
+    StudentClassOption[]
+  >([]);
   React.useEffect(() => {
     if (!access.isTeacher) return;
     setLoading(true);
@@ -92,7 +99,9 @@ export default function ReportsPage() {
                 key={item.classId}
                 icon={<ReportIcon width={18} height={18} />}
                 title={item.name}
-                subtitle={[item.code, item.subjectName].filter(Boolean).join(' · ')}
+                subtitle={[item.code, item.subjectName]
+                  .filter(Boolean)
+                  .join(' · ')}
                 onClick={() => history.push(`/reports/classes/${item.classId}`)}
               />
             ))}

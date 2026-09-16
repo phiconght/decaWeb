@@ -1,7 +1,7 @@
 import { CameraOutlined, EditOutlined } from '@ant-design/icons';
-import { Button, Input, Modal, Space, Typography, message } from 'antd';
-import React from 'react';
+import { Button, Input, Modal, message, Space, Typography } from 'antd';
 import type QrScannerLib from 'qr-scanner';
+import React from 'react';
 
 /**
  * WEB/PLAN.md §7 #2 — bọc `qr-scanner` (npm), xin quyền camera, có nút
@@ -58,7 +58,9 @@ export default function QrScanner({
       scannerRef.current = scanner;
       scanner.start().catch(() => {
         if (!cancelled) {
-          setCameraError('Không truy cập được camera. Bạn có thể nhập mã thủ công.');
+          setCameraError(
+            'Không truy cập được camera. Bạn có thể nhập mã thủ công.',
+          );
           setManualMode(true);
         }
       });
@@ -92,7 +94,9 @@ export default function QrScanner({
         <Space direction="vertical" style={{ width: '100%' }} align="center">
           {/* biome-ignore lint/a11y/useMediaCaption: camera preview trực tiếp, không phải media có lời thoại */}
           <video ref={videoRef} style={{ width: '100%', borderRadius: 8 }} />
-          {cameraError && <Typography.Text type="danger">{cameraError}</Typography.Text>}
+          {cameraError && (
+            <Typography.Text type="danger">{cameraError}</Typography.Text>
+          )}
           <Button icon={<EditOutlined />} onClick={() => setManualMode(true)}>
             Nhập mã thủ công
           </Button>
@@ -109,7 +113,10 @@ export default function QrScanner({
             <Button type="primary" onClick={handleManualSubmit}>
               Xác nhận
             </Button>
-            <Button icon={<CameraOutlined />} onClick={() => setManualMode(false)}>
+            <Button
+              icon={<CameraOutlined />}
+              onClick={() => setManualMode(false)}
+            >
               Dùng camera
             </Button>
           </Space>

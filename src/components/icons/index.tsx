@@ -176,6 +176,32 @@ export const InboxIcon = (p: IconProps) =>
     p,
   );
 
+export const PhoneIcon = (p: IconProps) =>
+  base(
+    <>
+      <path d="M6.5 3.5h3l1.3 4-2 1.3a12 12 0 0 0 5.4 5.4l1.3-2 4 1.3v3a1.5 1.5 0 0 1-1.6 1.5A16.5 16.5 0 0 1 5 6.1 1.5 1.5 0 0 1 6.5 3.5Z" />
+    </>,
+    p,
+  );
+
+export const MonitorIcon = (p: IconProps) =>
+  base(
+    <>
+      <rect x="3" y="4" width="18" height="12" rx="1.6" />
+      <path d="M8 20h8M12 16v4" />
+    </>,
+    p,
+  );
+
+export const PinIcon = (p: IconProps) =>
+  base(
+    <>
+      <path d="M12 21s7-6.1 7-11.5A7 7 0 0 0 5 9.5C5 14.9 12 21 12 21Z" />
+      <circle cx="12" cy="9.5" r="2.3" />
+    </>,
+    p,
+  );
+
 export const DownloadIcon = (p: IconProps) =>
   base(
     <>

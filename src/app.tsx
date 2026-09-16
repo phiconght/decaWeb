@@ -16,8 +16,10 @@ dayjs.extend(relativeTime);
 import AppShell from '@/components/AppShell';
 import PublicShell from '@/components/PublicShell';
 import { isPublicPath } from '@/constants/publicRoutes';
+import { fetchAppSettings } from '@/services/appSettings';
 import { getMe, toCurrentUser, tokenStore } from '@/services/auth';
 import { tokens } from '@/theme/tokens';
+import type { AppSettings } from '@/typings/appSettings';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
 
@@ -37,7 +39,12 @@ export async function getInitialState(): Promise<{
   currentUser?: API.CurrentUser;
   loading?: boolean;
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
+  /** Cấu hình dùng chung (hotline...) — tải 1 lần lúc mở app, xem services/appSettings.ts. */
+  appSettings?: AppSettings;
 }> {
+  // Công khai + không quan trọng bằng đăng nhập — lỗi thì bỏ qua (undefined),
+  // nơi hiển thị hotline tự ẩn khối liên quan thay vì crash cả trang.
+  const appSettings = await fetchAppSettings().catch(() => undefined);
   const fetchUserInfo = async () => {
     try {
       const user = await getMe();
@@ -76,11 +83,13 @@ export async function getInitialState(): Promise<{
       fetchUserInfo,
       currentUser,
       settings: defaultSettings as Partial<LayoutSettings>,
+      appSettings,
     };
   }
   return {
     fetchUserInfo,
     settings: defaultSettings as Partial<LayoutSettings>,
+    appSettings,
   };
 }
 
